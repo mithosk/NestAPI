@@ -5,8 +5,15 @@
   "username": "root",
   "password": "root",
   "database": "NestAPI",
+  "synchronize": true,
   "entities": [
-    "dist/**/*.entity{.ts,.js}"
+    "data/entities/*.entity.ts"
   ],
-  "synchronize": true
+  "migrations": [
+    "data/migrations/*.ts"
+  ],
+  "cli": {
+    "entitiesDir": "data/entities",
+    "migrationsDir": "data/migrations"
+  }
 }
