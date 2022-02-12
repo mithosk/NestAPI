@@ -10,10 +10,10 @@
     "dist/data/entities/*.entity.js"
   ],
   "migrations": [
-    "data/migrations/*.ts"
+    "dist/data/migrations/*.js"
   ],
   "cli": {
-    "entitiesDir": "dist/data/entities",
+    "entitiesDir": "data/entities",
     "migrationsDir": "data/migrations"
   }
 }
