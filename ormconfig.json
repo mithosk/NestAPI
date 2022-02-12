@@ -1,11 +1,11 @@
 {
   "type": "mysql",
   "host": "localhost",
-  "port": 49804,
+  "port": 49264,
   "username": "root",
   "password": "root",
   "database": "NestAPI",
-  "synchronize": true,
+  "synchronize": false,
   "entities": [
     "dist/data/entities/*.entity.js"
   ],
