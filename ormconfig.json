@@ -7,13 +7,13 @@
   "database": "NestAPI",
   "synchronize": true,
   "entities": [
-    "data/entities/*.entity.ts"
+    "dist/data/entities/*.entity.js"
   ],
   "migrations": [
     "data/migrations/*.ts"
   ],
   "cli": {
-    "entitiesDir": "data/entities",
+    "entitiesDir": "dist/data/entities",
     "migrationsDir": "data/migrations"
   }
 }
