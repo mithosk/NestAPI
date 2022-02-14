@@ -4,7 +4,7 @@
   "port": 49646,
   "username": "root",
   "password": "root",
-  "database": "NestAPI",
+  "database": "nest-api",
   "migrationsTableName": "_migration",
   "entities": [
     "dist/data/entities/*.entity.js"
