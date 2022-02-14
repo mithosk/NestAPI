@@ -24,7 +24,7 @@ export class ProductEntity {
 
 
 
-    @ManyToOne(() => CategoryEntity, category => category.products)
+    @ManyToOne(() => CategoryEntity, category => category.products, { onDelete: "CASCADE" })
     category: CategoryEntity;
 
 }
