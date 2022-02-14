@@ -1,11 +1,11 @@
 {
   "type": "mysql",
   "host": "localhost",
-  "port": 49264,
+  "port": 49646,
   "username": "root",
   "password": "root",
   "database": "NestAPI",
-  "synchronize": false,
+  "migrationsTableName": "_migration",
   "entities": [
     "dist/data/entities/*.entity.js"
   ],
