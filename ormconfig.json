@@ -7,13 +7,13 @@
   "database": "NestAPI",
   "migrationsTableName": "_migration",
   "entities": [
-    "dist/data/entities/*.entity.js"
+    "dist/src/data/entities/*.entity.js"
   ],
   "migrations": [
-    "dist/data/migrations/*.js"
+    "dist/src/data/migrations/*.js"
   ],
   "cli": {
-    "entitiesDir": "data/entities",
-    "migrationsDir": "data/migrations"
+    "entitiesDir": "src/data/entities",
+    "migrationsDir": "src/data/migrations"
   }
 }
