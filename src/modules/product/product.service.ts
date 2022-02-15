@@ -8,9 +8,9 @@ export class ProductService {
     private readonly productRepository: ProductRepository
   ) { }
 
-  public async list(): Promise<ProductModel[]> {
+  public async list(query: any): Promise<ProductModel[]> {
     let entities = await this.productRepository.findBy({
-      text: null
+      text: query["text"]
     },
       null,
       null)

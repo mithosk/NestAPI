@@ -30,7 +30,7 @@ export class ProductRepository extends Repository<ProductEntity> {
     private filterBy(query: SelectQueryBuilder<ProductEntity>, filter: ProductFilter) {
         if (filter.text != null) {
             query = query
-                .where("products.code LIKE :text OR products.description LIKE :text", { text: filter.text })
+                .where("pro.code LIKE :text OR pro.description LIKE :text", { text: filter.text })
         }
 
         return query

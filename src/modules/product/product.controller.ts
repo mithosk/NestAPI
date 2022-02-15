@@ -1,6 +1,6 @@
 import { ProductModel } from './product.model';
-import { Controller, Get } from '@nestjs/common';
 import { ProductService } from './product.service';
+import { Controller, Get, Query } from '@nestjs/common';
 
 @Controller('products')
 export class ProductController {
@@ -9,7 +9,7 @@ export class ProductController {
     ) { }
 
     @Get()
-    async list(): Promise<ProductModel[]> {
-        return await this.productService.list();
+    async list(@Query() query): Promise<ProductModel[]> {
+        return await this.productService.list(query);
     }
 }
