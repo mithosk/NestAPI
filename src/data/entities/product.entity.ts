@@ -10,13 +10,13 @@ export class ProductEntity {
 
 
 
-    @Column()
+    @Column({ unique: true })
     code: string
 
     @Column()
     description: string
 
-    @Column()
+    @Column({ type: "float" })
     price: number
 
     @Column()

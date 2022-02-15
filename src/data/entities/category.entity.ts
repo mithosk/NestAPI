@@ -10,7 +10,7 @@ export class CategoryEntity {
 
 
 
-    @Column()
+    @Column({ unique: true })
     code: string
 
 
