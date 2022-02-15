@@ -9,7 +9,7 @@ export class ProductController {
     ) { }
 
     @Get()
-    async list(@Query() query): Promise<ProductModel[]> {
+    async list(@Query() query: any): Promise<ProductModel[]> {
         return await this.productService.list(query);
     }
 }
