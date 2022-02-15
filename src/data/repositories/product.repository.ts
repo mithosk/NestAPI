@@ -5,7 +5,8 @@ import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
 @EntityRepository(ProductEntity)
 export class ProductRepository extends Repository<ProductEntity> {
     public async findBy(filter: ProductFilter, skip?: number, take?: number): Promise<ProductEntity[]> {
-        let query = this.createQueryBuilder("products")
+        let query = this.createQueryBuilder("pro")
+            .leftJoinAndSelect("pro.category", "cat")
 
         query = this.filterBy(query, filter)
 
@@ -19,7 +20,7 @@ export class ProductRepository extends Repository<ProductEntity> {
     }
 
     public async countBy(filter: ProductFilter): Promise<number> {
-        let query = this.createQueryBuilder("products")
+        let query = this.createQueryBuilder("pro")
 
         query = this.filterBy(query, filter)
 

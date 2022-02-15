@@ -9,27 +9,22 @@ export class ProductService {
   ) { }
 
   public async list(): Promise<ProductModel[]> {
-    let count = await this.productRepository.countBy({ text: "xyz" })
+    let entities = await this.productRepository.findBy({
+      text: null
+    },
+      null,
+      null)
 
-    return [
-      {
-        code: "ATTIMI_20X30",
-        categoryCode: "BOOK",
-        description: "Book Attimi 20x30",
-        price: count
-      },
-      {
-        code: "CALENDAR_MONTH_20X30",
-        categoryCode: "CALENDAR",
-        description: "Monthly Calendar 20x30",
-        price: count
-      },
-      {
-        code: "PRINT_12X12",
-        categoryCode: "PRINT",
-        description: "Simple print 12x12",
-        price: count
-      }
-    ];
+    let models: Array<ProductModel> = []
+    for (let i = 0; i < entities.length; i++) {
+      models.push({
+        code: entities[i].code,
+        categoryCode: entities[i].category.code,
+        description: entities[i].description,
+        price: entities[i].price
+      })
+    }
+
+    return models
   }
 }
