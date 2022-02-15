@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProductModel } from './product.interface';
+import { ProductModel } from './product.model';
 import { ProductRepository } from 'src/data/repositories/product.repository';
 
 @Injectable()
