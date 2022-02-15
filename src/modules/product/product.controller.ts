@@ -9,7 +9,7 @@ export class ProductController {
     ) { }
 
     @Get()
-    list(): Array<ProductModel> {
-        return this.productService.list();
+    async list(): Promise<ProductModel[]> {
+        return await this.productService.list();
     }
 }
