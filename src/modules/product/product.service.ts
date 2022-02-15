@@ -1,27 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { ProductModel } from './product.interface';
+import { ProductRepository } from 'src/data/repositories/product.repository';
 
 @Injectable()
 export class ProductService {
-  public list(): Array<ProductModel> {
+  constructor(
+    private readonly productRepository: ProductRepository
+  ) { }
+
+  public async list(): Promise<ProductModel[]> {
+    let count = await this.productRepository.countBy({ text: "xyz" })
+
     return [
       {
         code: "ATTIMI_20X30",
         categoryCode: "BOOK",
         description: "Book Attimi 20x30",
-        price: 19.9
+        price: count
       },
       {
         code: "CALENDAR_MONTH_20X30",
         categoryCode: "CALENDAR",
         description: "Monthly Calendar 20x30",
-        price: 14.9
+        price: count
       },
       {
         code: "PRINT_12X12",
         categoryCode: "PRINT",
         description: "Simple print 12x12",
-        price: 0.39
+        price: count
       }
     ];
   }
