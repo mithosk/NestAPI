@@ -1,7 +1,7 @@
 {
   "type": "mysql",
   "host": "localhost",
-  "port": 49646,
+  "port": 49487,
   "username": "root",
   "password": "root",
   "database": "nest-api",
