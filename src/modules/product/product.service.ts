@@ -1,3 +1,4 @@
+import { Connection } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { ProductModel } from './product.model';
 import { ProductEntity } from 'src/data/entities/product.entity';
@@ -8,6 +9,7 @@ import { CategoryRepository } from 'src/data/repositories/category.repository';
 @Injectable()
 export class ProductService {
   constructor(
+    private dataConnection: Connection,
     private readonly categoryRepository: CategoryRepository,
     private readonly productRepository: ProductRepository
   ) { }
@@ -17,7 +19,6 @@ export class ProductService {
     if (categoryEntity == null) {
       categoryEntity = new CategoryEntity()
       categoryEntity.code = product.categoryCode
-      await this.categoryRepository.save(categoryEntity)
     }
 
     let productEntity = new ProductEntity()
@@ -26,7 +27,11 @@ export class ProductService {
     productEntity.price = product.price
     productEntity.insertDarte = new Date()
     productEntity.category = categoryEntity
-    await this.productRepository.save(productEntity)
+
+    await this.dataConnection.transaction(async em => {
+      await em.save(categoryEntity)
+      await em.save(productEntity)
+    })
 
     return {
       code: productEntity.code,
