@@ -2,7 +2,7 @@ import { Server } from 'socket.io'
 import { ProductBus } from './product.bus'
 import { WebSocketGateway, OnGatewayInit } from '@nestjs/websockets'
 
-@WebSocketGateway({ namespace: "products" })
+@WebSocketGateway({ namespace: "product" })
 export class ProductGateway implements OnGatewayInit {
   constructor(
     private readonly socketBus: ProductBus
