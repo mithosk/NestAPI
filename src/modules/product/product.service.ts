@@ -1,27 +1,33 @@
-import { Connection } from 'typeorm';
-import { Injectable } from '@nestjs/common';
-import { ProductModel } from './product.model';
-import { ProductEntity } from 'src/data/entities/product.entity';
-import { CategoryEntity } from 'src/data/entities/category.entity';
-import { ProductRepository } from 'src/data/repositories/product.repository';
-import { CategoryRepository } from 'src/data/repositories/category.repository';
+import { Connection } from 'typeorm'
+import { ProductBus } from './product.bus'
+import { ProductModel } from './product.model'
+import { ForbiddenException, Injectable } from '@nestjs/common'
+import { ProductEntity } from 'src/data/entities/product.entity'
+import { CategoryEntity } from 'src/data/entities/category.entity'
+import { ProductRepository } from 'src/data/repositories/product.repository'
+import { CategoryRepository } from 'src/data/repositories/category.repository'
 
 @Injectable()
 export class ProductService {
   constructor(
-    private dataConnection: Connection,
     private readonly categoryRepository: CategoryRepository,
-    private readonly productRepository: ProductRepository
+    private readonly productRepository: ProductRepository,
+    private readonly productBus: ProductBus,
+    private readonly dataConnection: Connection
   ) { }
 
   public async create(product: ProductModel): Promise<ProductModel> {
-    let categoryEntity = await this.categoryRepository.findBy(product.categoryCode)
+    let productEntity = await this.productRepository.findByCode(product.code)
+    if (productEntity != null)
+      throw new ForbiddenException("product code already used")
+
+    let categoryEntity = await this.categoryRepository.findByCode(product.categoryCode)
     if (categoryEntity == null) {
       categoryEntity = new CategoryEntity()
       categoryEntity.code = product.categoryCode
     }
 
-    let productEntity = new ProductEntity()
+    productEntity = new ProductEntity()
     productEntity.code = product.code
     productEntity.description = product.description
     productEntity.price = product.price
@@ -33,24 +39,21 @@ export class ProductService {
       await em.save(productEntity)
     })
 
-    return {
-      code: productEntity.code,
-      categoryCode: productEntity.category.code,
-      description: productEntity.description,
-      price: productEntity.price
-    }
+    this.productBus.notify("ProductCreated", product)
+
+    return product
   }
 
   public async list(query: any): Promise<ProductModel[]> {
-    let entities = await this.productRepository.findBy({
+    let entities = await this.productRepository.findByFilter({
       text: query["text"]
     },
       null,
       null)
 
-    let models: Array<ProductModel> = []
+    let products: Array<ProductModel> = []
     for (let i = 0; i < entities.length; i++) {
-      models.push({
+      products.push({
         code: entities[i].code,
         categoryCode: entities[i].category.code,
         description: entities[i].description,
@@ -58,6 +61,6 @@ export class ProductService {
       })
     }
 
-    return models
+    return products
   }
 }
