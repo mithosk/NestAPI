@@ -1,14 +1,20 @@
-import { ProductFilter } from '../filters/product.filter';
-import { ProductEntity } from '../entities/product.entity';
-import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
+import { ProductFilter } from '../filters/product.filter'
+import { ProductEntity } from '../entities/product.entity'
+import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm'
 
 @EntityRepository(ProductEntity)
 export class ProductRepository extends Repository<ProductEntity> {
-    public async findBy(filter: ProductFilter, skip?: number, take?: number): Promise<ProductEntity[]> {
+    public async findByCode(code: string): Promise<ProductEntity> {
+        return await this.createQueryBuilder("pro")
+            .where("pro.code=:code", { code: code })
+            .getOne()
+    }
+
+    public async findByFilter(filter: ProductFilter, skip?: number, take?: number): Promise<ProductEntity[]> {
         let query = this.createQueryBuilder("pro")
             .leftJoinAndSelect("pro.category", "cat")
 
-        query = this.filterBy(query, filter)
+        query = this.applyFilter(query, filter)
 
         if (skip != null)
             query = query.skip(skip)
@@ -19,15 +25,15 @@ export class ProductRepository extends Repository<ProductEntity> {
         return await query.getMany();
     }
 
-    public async countBy(filter: ProductFilter): Promise<number> {
+    public async countByFilter(filter: ProductFilter): Promise<number> {
         let query = this.createQueryBuilder("pro")
 
-        query = this.filterBy(query, filter)
+        query = this.applyFilter(query, filter)
 
         return await query.getCount();
     }
 
-    private filterBy(query: SelectQueryBuilder<ProductEntity>, filter: ProductFilter) {
+    private applyFilter(query: SelectQueryBuilder<ProductEntity>, filter: ProductFilter) {
         if (filter.text != null) {
             query = query
                 .where("pro.code LIKE :text OR pro.description LIKE :text", { text: filter.text })
