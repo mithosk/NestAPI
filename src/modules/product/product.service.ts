@@ -1,6 +1,7 @@
 import { Connection } from 'typeorm'
 import { ProductBus } from './product.bus'
-import { ProductModel } from './product.model'
+import { ProductQuery } from './product.query'
+import { ProductModel } from './product.interface'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { ProductEntity } from 'src/data/entities/product.entity'
 import { CategoryEntity } from 'src/data/entities/category.entity'
@@ -44,9 +45,9 @@ export class ProductService {
     return product
   }
 
-  public async list(query: any): Promise<ProductModel[]> {
+  public async list(query: ProductQuery): Promise<ProductModel[]> {
     let entities = await this.productRepository.findByFilter({
-      text: query["text"]
+      text: query.text
     },
       null,
       null)
