@@ -19,11 +19,11 @@ export class ProductService {
 
   public async create(product: ProductModel): Promise<ProductModel> {
     let productEntity = await this.productRepository.findByCode(product.code)
-    if (productEntity != null)
+    if (productEntity !== undefined)
       throw new ForbiddenException("product code already used")
 
     let categoryEntity = await this.categoryRepository.findByCode(product.categoryCode)
-    if (categoryEntity == null) {
+    if (categoryEntity === undefined) {
       categoryEntity = new CategoryEntity()
       categoryEntity.code = product.categoryCode
     }
@@ -50,7 +50,7 @@ export class ProductService {
       {
         text: query.text
       },
-      null,
+      undefined,
       (pageIndex - 1) * pageSize,
       pageSize
     )

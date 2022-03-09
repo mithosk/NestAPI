@@ -18,7 +18,7 @@ export class ProductRepository extends Repository<ProductEntity> {
 
         query = this.applyFilter(query, filter)
 
-        if (sort != null)
+        if (sort !== undefined)
             switch (sort) {
                 case ProductSort.CodeAsc:
                     query = query.orderBy('pro.code', 'ASC')
@@ -40,10 +40,10 @@ export class ProductRepository extends Repository<ProductEntity> {
                     throw new InternalServerErrorException('unmanaged sorting')
             }
 
-        if (skip != null)
+        if (skip !== undefined)
             query = query.skip(skip)
 
-        if (take != null)
+        if (take !== undefined)
             query = query.take(take)
 
         return await query.getMany();
@@ -58,7 +58,7 @@ export class ProductRepository extends Repository<ProductEntity> {
     }
 
     private applyFilter(query: SelectQueryBuilder<ProductEntity>, filter: ProductFilter) {
-        if (filter.text !== null) {
+        if (filter.text !== undefined) {
             query = query
                 .where("pro.code LIKE :text OR pro.description LIKE :text", { text: "%" + filter.text + "%" })
         }
