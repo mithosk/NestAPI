@@ -1,6 +1,6 @@
 import { ProductModel } from './product.interface'
 import { ProductService } from './product.service'
-import { ProductFilter, ProductSortType } from './product.query'
+import { ProductFilter, ProductSort } from './product.query'
 import { Body, Controller, Get, Post, Query, Headers } from '@nestjs/common'
 
 @Controller('products')
@@ -22,8 +22,8 @@ export class ProductController {
         let pageSize = parseInt(headers['pagesize'])
         pageSize = isNaN(pageSize) ? 30 : pageSize
 
-        let sortType: ProductSortType = ProductSortType[headers['sorttype']]
-        sortType = sortType === undefined ? ProductSortType.Code : sortType
+        let sortType: ProductSort = ProductSort[headers['sorttype']]
+        sortType = sortType === undefined ? ProductSort.CodeAsc : sortType
 
         return await this.productService.list(query, pageIndex, pageSize)
     }
