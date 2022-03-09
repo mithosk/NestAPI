@@ -25,6 +25,6 @@ export class ProductController {
         let sortType: ProductSortType = ProductSortType[headers['sorttype']]
         sortType = sortType === undefined ? ProductSortType.Code : sortType
 
-        return await this.productService.list(query)
+        return await this.productService.list(query, pageIndex, pageSize)
     }
 }

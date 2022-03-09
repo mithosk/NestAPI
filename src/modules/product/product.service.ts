@@ -1,12 +1,12 @@
 import { Connection } from 'typeorm'
 import { ProductBus } from './product.bus'
-import { ProductQuery } from './product.query'
+import { ProductFilter } from './product.query'
 import { ProductModel } from './product.interface'
 import { ForbiddenException, Injectable } from '@nestjs/common'
-import { ProductEntity } from 'src/data/entities/product.entity'
-import { CategoryEntity } from 'src/data/entities/category.entity'
-import { ProductRepository } from 'src/data/repositories/product.repository'
-import { CategoryRepository } from 'src/data/repositories/category.repository'
+import { ProductEntity } from '../../data/entities/product.entity'
+import { CategoryEntity } from '../../data/entities/category.entity'
+import { ProductRepository } from '../../data/repositories/product.repository'
+import { CategoryRepository } from '../../data/repositories/category.repository'
 
 @Injectable()
 export class ProductService {
@@ -45,12 +45,12 @@ export class ProductService {
     return product
   }
 
-  public async list(query: ProductQuery): Promise<ProductModel[]> {
+  public async list(query: ProductFilter, pageIndex: number, pageSize: number): Promise<ProductModel[]> {
     let entities = await this.productRepository.findByFilter({
       text: query.text
     },
-      null,
-      null)
+      (pageIndex - 1) * pageSize,
+      pageSize)
 
     let products: Array<ProductModel> = []
     for (let i = 0; i < entities.length; i++) {
