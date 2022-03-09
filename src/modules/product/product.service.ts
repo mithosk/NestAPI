@@ -46,12 +46,14 @@ export class ProductService {
   }
 
   public async list(query: ProductFilter, pageIndex: number, pageSize: number): Promise<ProductModel[]> {
-    let entities = await this.productRepository.findByFilter({
-      text: query.text
-    },
+    let entities = await this.productRepository.findByFilter(
+      {
+        text: query.text
+      },
       null,
       (pageIndex - 1) * pageSize,
-      pageSize)
+      pageSize
+    )
 
     let products: Array<ProductModel> = []
     for (let i = 0; i < entities.length; i++) {
