@@ -56,14 +56,12 @@ export class ProductService {
     )
 
     let products: Array<ProductModel> = []
-    for (let i = 0; i < entities.length; i++) {
-      products.push({
-        code: entities[i].code,
-        categoryCode: entities[i].category.code,
-        description: entities[i].description,
-        price: entities[i].price
-      })
-    }
+    entities.forEach(per => products.push({
+      code: per.code,
+      categoryCode: per.category.code,
+      description: per.description,
+      price: per.price
+    }))
 
     return products
   }
