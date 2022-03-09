@@ -20,7 +20,7 @@ export class ProductService {
   public async create(product: ProductModel): Promise<ProductModel> {
     let productEntity = await this.productRepository.findByCode(product.code)
     if (productEntity !== undefined)
-      throw new ForbiddenException("product code already used")
+      throw new ForbiddenException('product code already used')
 
     let categoryEntity = await this.categoryRepository.findByCode(product.categoryCode)
     if (categoryEntity === undefined) {
@@ -40,7 +40,7 @@ export class ProductService {
       await em.save(productEntity)
     })
 
-    this.productBus.notify("ProductCreated", product)
+    this.productBus.notify('ProductCreated', product)
 
     return product
   }
