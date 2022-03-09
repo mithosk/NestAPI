@@ -49,6 +49,7 @@ export class ProductService {
     let entities = await this.productRepository.findByFilter({
       text: query.text
     },
+      null,
       (pageIndex - 1) * pageSize,
       pageSize)
 
