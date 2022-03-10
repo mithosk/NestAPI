@@ -15,7 +15,7 @@ export class ProductController {
     }
 
     @Get()
-    async list(@Query() query: ProductFilter, @Headers() headers: { [header: string]: string }): Promise<ProductModel[]> {
+    async list(@Query() filter: ProductFilter, @Headers() headers: { [header: string]: string }): Promise<ProductModel[]> {
         let pageIndex = parseInt(headers['pageindex'])
         pageIndex = isNaN(pageIndex) ? 1 : pageIndex
 
@@ -25,6 +25,6 @@ export class ProductController {
         let sortType: ProductSort = ProductSort[headers['sorttype']]
         sortType = sortType === undefined ? ProductSort.CodeAsc : sortType
 
-        return await this.productService.list(query, pageIndex, pageSize)
+        return await this.productService.list(filter, sortType, pageIndex, pageSize)
     }
 }
