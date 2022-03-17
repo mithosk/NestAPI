@@ -1,13 +1,13 @@
 import { Connection } from 'typeorm'
 import { ProductBus } from './product.bus'
-import { ProductModel, ProductQuery, ProductSortHeader, ProductSortType } from './product.interface'
+import { ProductSort } from '../../data/sorts/product.sort'
+import { ProductFilter } from 'src/data/filters/product.filter'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { ProductEntity } from '../../data/entities/product.entity'
 import { CategoryEntity } from '../../data/entities/category.entity'
 import { ProductRepository } from '../../data/repositories/product.repository'
 import { CategoryRepository } from '../../data/repositories/category.repository'
-import { ProductSort } from 'src/data/sorts/product.sort'
-import { ProductFilter } from 'src/data/filters/product.filter'
+import { ProductModel, ProductQuery, ProductSortType } from './product.interface'
 
 @Injectable()
 export class ProductService {
@@ -28,6 +28,13 @@ export class ProductService {
       categoryEntity = new CategoryEntity()
       categoryEntity.code = product.categoryCode
     }
+
+    productEntity = new ProductEntity()
+    productEntity.code = product.code
+    productEntity.description = product.description
+    productEntity.price = product.price
+    productEntity.insertDarte = new Date()
+    productEntity.category = categoryEntity
 
     productEntity = new ProductEntity()
     productEntity.code = product.code
