@@ -1,12 +1,13 @@
 import { Connection } from 'typeorm'
 import { ProductBus } from './product.bus'
-import { ProductModel } from './product.interface'
-import { ProductFilter, ProductSort } from './product.query'
+import { ProductModel, ProductQuery, ProductSortHeader, ProductSortType } from './product.interface'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { ProductEntity } from '../../data/entities/product.entity'
 import { CategoryEntity } from '../../data/entities/category.entity'
 import { ProductRepository } from '../../data/repositories/product.repository'
 import { CategoryRepository } from '../../data/repositories/category.repository'
+import { ProductSort } from 'src/data/sorts/product.sort'
+import { ProductFilter } from 'src/data/filters/product.filter'
 
 @Injectable()
 export class ProductService {
@@ -45,24 +46,19 @@ export class ProductService {
     return product
   }
 
-  public async list(filter: ProductFilter, sort: ProductSort, pageIndex: number, pageSize: number): Promise<ProductModel[]> {
-    let entities = await this.productRepository.findByFilter(
-      {
-        text: filter.text
-      },
-      sort,
-      (pageIndex - 1) * pageSize,
-      pageSize
-    )
+  public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductModel[]> {
+    let filter: ProductFilter = {
+      text: query.text
+    }
 
-    let products: Array<ProductModel> = []
-    entities.forEach(per => products.push({
+    let entities = await this.productRepository.findByFilter(filter, ProductSort[sort.toString()], (pageIndex - 1) * pageSize, pageSize)
+    let count = await this.productRepository.countByFilter(filter)
+
+    return entities.map(per => <ProductModel>{
       code: per.code,
       categoryCode: per.category.code,
       description: per.description,
       price: per.price
-    }))
-
-    return products
+    })
   }
 }
