@@ -58,7 +58,7 @@ export class ProductService {
       text: query.text
     }
 
-    let entities = await this.productRepository.findByFilter(filter, ProductSort[sort.toString()], (pageIndex - 1) * pageSize, pageSize)
+    let entities = await this.productRepository.findByFilter(filter, ProductSort[ProductSortType[sort]], (pageIndex - 1) * pageSize, pageSize)
     let count = await this.productRepository.countByFilter(filter)
 
     return entities.map(per => <ProductModel>{
