@@ -1,7 +1,7 @@
+import { ProductSort } from '../sorts/product.sort'
 import { ProductFilter } from '../filters/product.filter'
 import { ProductEntity } from '../entities/product.entity'
 import { InternalServerErrorException } from '@nestjs/common'
-import { ProductSort } from '../../modules/product/product.query'
 import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm'
 
 @EntityRepository(ProductEntity)
@@ -12,7 +12,7 @@ export class ProductRepository extends Repository<ProductEntity> {
             .getOne()
     }
 
-    public async findByFilter(filter: ProductFilter, sort?: ProductSort, skip?: number, take?: number): Promise<ProductEntity[]> {
+    public async findByFilter(filter: ProductFilter, sort: ProductSort, skip: number, take: number): Promise<ProductEntity[]> {
         let query = this.createQueryBuilder('pro')
             .leftJoinAndSelect('pro.category', 'cat')
 
