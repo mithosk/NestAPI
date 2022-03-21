@@ -1,5 +1,6 @@
 import { Connection } from 'typeorm'
 import { ProductBus } from './product.bus'
+import { ProductPage } from './product.page'
 import { ProductFilter } from 'src/data/filters/product.filter'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { ProductSort } from '../../data/enums/product-sort.enum'
@@ -36,13 +37,6 @@ export class ProductService {
     productEntity.insertDarte = new Date()
     productEntity.category = categoryEntity
 
-    productEntity = new ProductEntity()
-    productEntity.code = product.code
-    productEntity.description = product.description
-    productEntity.price = product.price
-    productEntity.insertDarte = new Date()
-    productEntity.category = categoryEntity
-
     await this.dataConnection.transaction(async em => {
       await em.save(categoryEntity)
       await em.save(productEntity)
@@ -53,19 +47,23 @@ export class ProductService {
     return product
   }
 
-  public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductModel[]> {
+  public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductPage> {
     let filter: ProductFilter = {
       text: query.text
     }
 
-    let entities = await this.productRepository.findByFilter(filter, ProductSort[ProductSortType[sort]], (pageIndex - 1) * pageSize, pageSize)
-    let count = await this.productRepository.countByFilter(filter)
+    let products = await this.productRepository.findByFilter(filter, ProductSort[ProductSortType[sort]], (pageIndex - 1) * pageSize, pageSize)
+    let productCount = await this.productRepository.countByFilter(filter)
 
-    return entities.map(per => <ProductModel>{
-      code: per.code,
-      categoryCode: per.category.code,
-      description: per.description,
-      price: per.price
-    })
+    return {
+      products: products.map(per => <ProductModel>{
+        code: per.code,
+        categoryCode: per.category.code,
+        description: per.description,
+        price: per.price
+      }),
+      pageCount: Math.ceil(productCount / pageSize),
+      productCount: productCount
+    }
   }
 }

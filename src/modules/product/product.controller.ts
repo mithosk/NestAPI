@@ -1,6 +1,7 @@
 import { ProductService } from './product.service'
-import { Body, Controller, Get, Post, Query, Headers } from '@nestjs/common'
+import { Response as HttpResponse } from 'express'
 import { ProductModel, ProductQuery, ProductSortType } from './product.interface'
+import { Body, Controller, Get, Post, Query, Response, Headers } from '@nestjs/common'
 
 @Controller('products')
 export class ProductController {
@@ -9,21 +10,29 @@ export class ProductController {
     ) { }
 
     @Post()
-    async post(@Body() body: ProductModel): Promise<ProductModel> {
+    public async post(@Body() body: ProductModel): Promise<ProductModel> {
         return await this.productService.create(body)
     }
 
     @Get()
-    async list(@Query() filter: ProductQuery, @Headers() headers: { [header: string]: string }): Promise<ProductModel[]> {
+    public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<HttpResponse> {
+        let sortType = ProductSortType[headers['sorttype']]
+        sortType = sortType === undefined ? ProductSortType.CodeAsc : sortType
+
         let pageIndex = parseInt(headers['pageindex'])
         pageIndex = isNaN(pageIndex) ? 1 : pageIndex
 
         let pageSize = parseInt(headers['pagesize'])
         pageSize = isNaN(pageSize) ? 30 : pageSize
 
-        let sortType = ProductSortType[headers['sorttype']]
-        sortType = sortType === undefined ? ProductSortType.CodeAsc : sortType
+        let page = await this.productService.list(query, sortType, pageIndex, pageSize)
 
-        return await this.productService.list(filter, sortType, pageIndex, pageSize)
+        return response
+            .set('SortType', ProductSortType[sortType])
+            .set('PageIndex', pageIndex.toString())
+            .set('PageSize', pageSize.toString())
+            .set('PageCount', page.pageCount.toString())
+            .set('ItemCount', page.productCount.toString())
+            .json(page.products)
     }
 }
