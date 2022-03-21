@@ -1,4 +1,4 @@
-import { ProductSort } from '../sorts/product.sort'
+import { ProductSort } from '../enums/product-sort.enum'
 import { ProductFilter } from '../filters/product.filter'
 import { ProductEntity } from '../entities/product.entity'
 import { InternalServerErrorException } from '@nestjs/common'
