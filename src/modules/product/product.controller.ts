@@ -15,7 +15,7 @@ export class ProductController {
     }
 
     @Get()
-    public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<HttpResponse> {
+    public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<ProductModel[]> {
         let sortType = ProductSortType[headers['sorttype']]
         sortType = sortType === undefined ? ProductSortType.CodeAsc : sortType
 
@@ -27,12 +27,14 @@ export class ProductController {
 
         let page = await this.productService.list(query, sortType, pageIndex, pageSize)
 
-        return response
+        response
             .set('SortType', ProductSortType[sortType])
             .set('PageIndex', pageIndex.toString())
             .set('PageSize', pageSize.toString())
             .set('PageCount', page.pageCount.toString())
             .set('ItemCount', page.productCount.toString())
             .json(page.products)
+
+        return page.products
     }
 }
