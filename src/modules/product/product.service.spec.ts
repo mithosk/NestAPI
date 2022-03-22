@@ -17,8 +17,8 @@ describe('ProductService', () => {
       providers: [ProductService, ProductBus],
       imports: [
         TypeOrmModule.forRoot({
-          type: "sqlite",
-          database: "in-memory",
+          type: 'sqlite',
+          database: 'in-memory',
           entities: [
             CategoryEntity,
             ProductEntity
