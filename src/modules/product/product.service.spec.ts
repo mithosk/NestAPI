@@ -1,6 +1,8 @@
 import { ProductBus } from './product.bus'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ProductService } from './product.service'
+import { ProductModel } from './product.interface'
+import { ForbiddenException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getConnection, getRepository } from 'typeorm'
 import { ProductEntity } from '../../data/entities/product.entity'
@@ -121,6 +123,24 @@ describe('ProductService', () => {
       expect(busMessage.categoryCode).toBe('CATEGORY_CODE')
       expect(busMessage.description).toBe('product description')
       expect(busMessage.price).toBe(5)
+    })
+
+    it('generates an error to block duplication of the product code', async () => {
+      await getRepository(ProductEntity).insert({
+        code: 'PRODUCT_CODE',
+        description: 'description',
+        price: 3.2,
+        insertDarte: new Date()
+      })
+
+      const createPromise = async (): Promise<ProductModel> => await service.create({
+        code: 'PRODUCT_CODE',
+        categoryCode: 'CATEGORY_CODE',
+        description: 'product description',
+        price: 5.4
+      })
+
+      await expect(createPromise()).rejects.toThrow(ForbiddenException)
     })
 
   })
