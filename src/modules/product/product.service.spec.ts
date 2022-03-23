@@ -45,7 +45,7 @@ describe('ProductService', () => {
 
   describe('create', () => {
 
-    it('create a new product with a new category', async () => {
+    it('creates a new product with a new category', async () => {
       let busEvent: string
       let busMessage: any
       jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
@@ -83,7 +83,7 @@ describe('ProductService', () => {
       expect(busMessage.price).toBe(12.45)
     })
 
-    it('create a new product with an old category', async () => {
+    it('creates a new product with an old category', async () => {
       let busEvent: string
       let busMessage: any
       jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
