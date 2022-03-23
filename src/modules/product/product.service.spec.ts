@@ -1,8 +1,8 @@
-import { getRepository } from 'typeorm'
 import { ProductBus } from './product.bus'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ProductService } from './product.service'
 import { Test, TestingModule } from '@nestjs/testing'
+import { getConnection, getRepository } from 'typeorm'
 import { ProductEntity } from '../../data/entities/product.entity'
 import { CategoryEntity } from '../../data/entities/category.entity'
 import { ProductRepository } from '../../data/repositories/product.repository'
@@ -35,6 +35,10 @@ describe('ProductService', () => {
 
     service = module.get<ProductService>(ProductService)
     bus = module.get<ProductBus>(ProductBus)
+  })
+
+  afterEach(async () => {
+    await getConnection().close()
   })
 
   describe('create', () => {
