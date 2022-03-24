@@ -205,7 +205,6 @@ describe('ProductService', () => {
           category: categoryEntity
         })
 
-
       for (let i = 0; i < 10; i++)
         await getRepository(ProductEntity).insert({
           code: '3_PRODUCT_CODE_' + i,
@@ -218,6 +217,25 @@ describe('ProductService', () => {
       let page = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
 
       expect(page.productCount).toBe(20)
+    })
+
+    it('sort products by price', async () => {
+      let categoryEntity: CategoryEntity = new CategoryEntity()
+      categoryEntity.code = 'CATEGORY_CODE'
+      await getRepository(CategoryEntity).insert(categoryEntity)
+
+      for (let i = 0; i < 100; i++)
+        await getRepository(ProductEntity).insert({
+          code: 'PRODUCT_CODE_' + i,
+          description: 'description',
+          price: i,
+          insertDarte: new Date(),
+          category: categoryEntity
+        })
+
+      let page = await service.list({ text: undefined }, ProductSortType.PriceDesc, 1, 1)
+
+      expect(page.products[0].price).toBe(99)
     })
 
   })
