@@ -15,8 +15,8 @@ export class ProductService {
   constructor(
     private readonly categoryRepository: CategoryRepository,
     private readonly productRepository: ProductRepository,
-    private readonly productBus: ProductBus,
-    private readonly dataConnection: Connection
+    private readonly dataConnection: Connection,
+    private readonly productBus: ProductBus
   ) { }
 
   public async create(product: ProductModel): Promise<ProductModel> {
@@ -42,9 +42,11 @@ export class ProductService {
       await em.save(productEntity)
     })
 
-    this.productBus.notify('ProductCreated', product)
+    let savedProduct = this.map(productEntity)
 
-    return product
+    this.productBus.notify('ProductCreated', savedProduct)
+
+    return savedProduct
   }
 
   public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductPage> {
@@ -56,14 +58,19 @@ export class ProductService {
     let productCount = await this.productRepository.countByFilter(filter)
 
     return {
-      products: products.map(per => <ProductModel>{
-        code: per.code,
-        categoryCode: per.category.code,
-        description: per.description,
-        price: per.price
-      }),
+      products: products.map(per => this.map(per)),
       pageCount: Math.ceil(productCount / pageSize),
       productCount: productCount
+    }
+  }
+
+  private map(entity: ProductEntity): ProductModel {
+    return <ProductModel>{
+      code: entity.code,
+      description: entity.description,
+      categoryId: entity.category.uuid,
+      categoryCode: entity.category.code,
+      price: entity.price
     }
   }
 }
