@@ -1,11 +1,11 @@
 import { ProductBus } from './product.bus'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ProductService } from './product.service'
-import { ProductModel } from './product.interface'
 import { ForbiddenException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getConnection, getRepository } from 'typeorm'
 import { ProductEntity } from '../../data/entities/product.entity'
+import { ProductModel, ProductSortType } from './product.interface'
 import { CategoryEntity } from '../../data/entities/category.entity'
 import { ProductRepository } from '../../data/repositories/product.repository'
 import { CategoryRepository } from '../../data/repositories/category.repository'
@@ -155,6 +155,31 @@ describe('ProductService', () => {
       })
 
       await expect(createPromise()).rejects.toThrow(ForbiddenException)
+    })
+
+  })
+
+  describe('list', () => {
+
+    it('returns the second page', async () => {
+      let categoryEntity: CategoryEntity = new CategoryEntity()
+      categoryEntity.code = 'CATEGORY_CODE'
+      await getRepository(CategoryEntity).insert(categoryEntity)
+
+      for (let i = 0; i < 11; i++)
+        await getRepository(ProductEntity).insert({
+          code: 'PRODUCT_CODE_' + i,
+          description: 'description',
+          price: 15.1,
+          insertDarte: new Date(),
+          category: categoryEntity
+        })
+
+      let productPage = await service.list({ text: undefined }, ProductSortType.CodeAsc, 2, 10)
+
+      expect(productPage.products.length).toBe(1)
+      expect(productPage.pageCount).toBe(2)
+      expect(productPage.productCount).toBe(11)
     })
 
   })
