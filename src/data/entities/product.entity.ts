@@ -1,5 +1,5 @@
-import { CategoryEntity } from './category.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { CategoryEntity } from './category.entity'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated } from 'typeorm'
 
 
 @Entity('products')
@@ -9,6 +9,9 @@ export class ProductEntity {
     id: number
 
 
+    @Generated('uuid')
+    @Column({ unique: true })
+    uuid: string
 
     @Column({ unique: true })
     code: string
@@ -23,8 +26,7 @@ export class ProductEntity {
     insertDarte: Date
 
 
-
-    @ManyToOne(() => CategoryEntity, category => category.products, { onDelete: 'CASCADE' })
-    category: CategoryEntity;
+    @ManyToOne(() => CategoryEntity, cat => cat.products, { onDelete: 'CASCADE' })
+    category: CategoryEntity
 
 }
