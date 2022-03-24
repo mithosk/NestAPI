@@ -54,9 +54,11 @@ describe('ProductService', () => {
       })
 
       let productModel = await service.create({
+        id: undefined,
         code: 'PRODUCT_CODE',
-        categoryCode: 'CATEGORY_CODE',
         description: 'product description',
+        categoryId: undefined,
+        categoryCode: 'CATEGORY_CODE',
         price: 12.45
       })
 
@@ -96,9 +98,11 @@ describe('ProductService', () => {
       })
 
       let productModel = await service.create({
+        id: undefined,
         code: 'PRODUCT_CODE',
-        categoryCode: 'CATEGORY_CODE',
         description: 'product description',
+        categoryId: undefined,
+        categoryCode: 'CATEGORY_CODE',
         price: 5
       })
 
@@ -134,9 +138,11 @@ describe('ProductService', () => {
       })
 
       const createPromise = async (): Promise<ProductModel> => await service.create({
+        id: undefined,
         code: 'PRODUCT_CODE',
-        categoryCode: 'CATEGORY_CODE',
         description: 'product description',
+        categoryId: undefined,
+        categoryCode: 'CATEGORY_CODE',
         price: 5.4
       })
 
