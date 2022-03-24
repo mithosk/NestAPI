@@ -179,7 +179,6 @@ describe('ProductService', () => {
 
       expect(productPage.products.length).toBe(1)
       expect(productPage.pageCount).toBe(2)
-      expect(productPage.productCount).toBe(11)
     })
 
     it('filters products by text', async () => {
