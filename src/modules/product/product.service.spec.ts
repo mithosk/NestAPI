@@ -182,5 +182,43 @@ describe('ProductService', () => {
       expect(productPage.productCount).toBe(11)
     })
 
+    it('filters products by text', async () => {
+      let categoryEntity: CategoryEntity = new CategoryEntity()
+      categoryEntity.code = 'CATEGORY_CODE'
+      await getRepository(CategoryEntity).insert(categoryEntity)
+
+      for (let i = 0; i < 10; i++)
+        await getRepository(ProductEntity).insert({
+          code: '1_PRODUCT_CODE_' + i,
+          description: 'description',
+          price: 4,
+          insertDarte: new Date(),
+          category: categoryEntity
+        })
+
+      for (let i = 0; i < 10; i++)
+        await getRepository(ProductEntity).insert({
+          code: '2_PRODUCT_CODE_XXX_' + i,
+          description: 'description',
+          price: 4,
+          insertDarte: new Date(),
+          category: categoryEntity
+        })
+
+
+      for (let i = 0; i < 10; i++)
+        await getRepository(ProductEntity).insert({
+          code: '3_PRODUCT_CODE_' + i,
+          description: 'description xxx',
+          price: 4,
+          insertDarte: new Date(),
+          category: categoryEntity
+        })
+
+      let page = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
+
+      expect(page.productCount).toBe(20)
+    })
+
   })
 })
