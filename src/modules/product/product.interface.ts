@@ -1,14 +1,18 @@
 import { IsNotEmpty } from 'class-validator'
 
 export class ProductModel {
+    id: string
+
     @IsNotEmpty()
     code: string
 
     @IsNotEmpty()
-    categoryCode: string
+    description: string
+
+    categoryId: string
 
     @IsNotEmpty()
-    description: string
+    categoryCode: string
 
     @IsNotEmpty()
     price: number
