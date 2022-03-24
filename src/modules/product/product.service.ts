@@ -66,6 +66,7 @@ export class ProductService {
 
   private map(entity: ProductEntity): ProductModel {
     return <ProductModel>{
+      id: entity.uuid,
       code: entity.code,
       description: entity.description,
       categoryId: entity.category.uuid,
