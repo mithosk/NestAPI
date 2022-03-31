@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 export class ProductModel {
     id: string
@@ -18,7 +18,9 @@ export class ProductModel {
     price: number
 }
 
-export interface ProductQuery {
+export class ProductQuery {
+    @IsString()
+    @IsOptional()
     text: string
 }
 

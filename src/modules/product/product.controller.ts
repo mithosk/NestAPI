@@ -1,7 +1,7 @@
 import { ProductService } from './product.service'
 import { Response as HttpResponse } from 'express'
 import { ProductModel, ProductQuery, ProductSortType } from './product.interface'
-import { Body, Controller, Get, Post, Query, Response, Headers } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, Response, Headers, UsePipes, ValidationPipe } from '@nestjs/common'
 
 @Controller('products')
 export class ProductController {
@@ -15,6 +15,7 @@ export class ProductController {
     }
 
     @Get()
+    @UsePipes(new ValidationPipe({ transform: true }))
     public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<ProductModel[]> {
         let sortType = ProductSortType[headers['sorttype']]
         sortType = sortType === undefined ? ProductSortType.CodeAsc : sortType
