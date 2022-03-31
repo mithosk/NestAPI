@@ -18,6 +18,10 @@ describe('ProductService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ProductService, ProductBus],
       imports: [
+        TypeOrmModule.forFeature([
+          CategoryRepository,
+          ProductRepository
+        ]),
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: 'sqlite/e5e26271-2f0d-485d-ba98-f4e8186d6594',
@@ -27,11 +31,7 @@ describe('ProductService', () => {
           ],
           synchronize: true,
           dropSchema: true
-        }),
-        TypeOrmModule.forFeature([
-          CategoryRepository,
-          ProductRepository
-        ])
+        })
       ]
     }).compile()
 
