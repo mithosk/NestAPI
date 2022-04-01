@@ -45,8 +45,27 @@ describe('ProductController', () => {
 
   describe('post', () => {
 
-    it('xxxxx xxxxx xxxxx', async () => {
-      expect(controller).toBeDefined()
+    it('creates a new product', async () => {
+      jest.spyOn(service, 'create').mockImplementation(() => Promise.resolve({
+        id: '9671b89b-cb60-4832-991e-ab2ccb16c79b',
+        code: 'PRODUCT_CODE_1',
+        description: 'product description',
+        categoryId: 'e746b4da-9a1e-423b-87a4-53fa543e8f09',
+        categoryCode: 'CATEGORY_CODE_1',
+        price: 5
+      }))
+
+      let product = await controller.post({
+        id: '5f4f5f67-cabd-4d41-93a1-4e9a756dde1c',
+        code: 'PRODUCT_CODE_2',
+        description: 'product description',
+        categoryId: 'e41fc545-3421-47f2-ad81-92c1381456e1',
+        categoryCode: 'CATEGORY_CODE_2',
+        price: 5
+      })
+
+      expect(product.code).toEqual('PRODUCT_CODE_1')
+      expect(product.categoryCode).toEqual('CATEGORY_CODE_1')
     })
 
   })
