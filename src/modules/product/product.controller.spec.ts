@@ -88,14 +88,14 @@ describe('ProductController', () => {
           },
           {
             id: '410edf54-8282-44f6-924c-d6784fe5e287',
-            code: 'PRODUCT_CODE_1',
+            code: 'PRODUCT_CODE_2',
             description: 'product description',
             categoryId: '93072e8c-0c73-4afd-89b1-431cf20f0ef0',
-            categoryCode: 'CATEGORY_CODE_1',
+            categoryCode: 'CATEGORY_CODE_2',
             price: 5
           }
         ],
-        pageCount: 5,
+        pageCount: 3,
         productCount: 15
       }))
 
@@ -111,6 +111,7 @@ describe('ProductController', () => {
         json(body: ProductModel[]) {
           responseBody = body
         }
+
       }
 
       //execution of the function to be tested
