@@ -16,7 +16,7 @@ export class ProductController {
 
     @Get()
     @UsePipes(new ValidationPipe({ transform: true }))
-    public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<ProductModel[]> {
+    public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<HttpResponse> {
         let sortType = ProductSortType[headers['sorttype']]
         sortType = sortType === undefined ? ProductSortType.CodeAsc : sortType
 
@@ -28,14 +28,12 @@ export class ProductController {
 
         let page = await this.productService.list(query, sortType, pageIndex, pageSize)
 
-        response
+        return response
             .set('SortType', ProductSortType[sortType])
             .set('PageIndex', pageIndex.toString())
             .set('PageSize', pageSize.toString())
             .set('PageCount', page.pageCount.toString())
             .set('ItemCount', page.productCount.toString())
             .json(page.products)
-
-        return page.products
     }
 }
