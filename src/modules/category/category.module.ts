@@ -12,4 +12,4 @@ import { CategoryRepository } from 'src/data/repositories/category.repository'
   ])]
 })
 
-export class ProductModule { }
+export class CategoryModule { }
