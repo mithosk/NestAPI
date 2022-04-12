@@ -16,6 +16,9 @@ export class CategoryEntity {
     @Column({ unique: true })
     code: string
 
+    @Column({ nullable: true })
+    description: string
+
 
     @OneToMany(() => ProductEntity, per => per.category)
     products: ProductEntity[]
