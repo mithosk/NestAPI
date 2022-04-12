@@ -6,17 +6,17 @@ import { Body, Controller, Get, Post, Query, Response, Headers, UsePipes, Valida
 @Controller('products')
 export class ProductController {
     constructor(
-        private readonly productService: ProductService
+        private readonly service: ProductService
     ) { }
 
     @Post()
     public async post(@Body() body: ProductModel): Promise<ProductModel> {
-        return await this.productService.create(body)
+        return await this.service.create(body)
     }
 
     @Get()
     @UsePipes(new ValidationPipe({ transform: true }))
-    public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<HttpResponse> {
+    public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<void> {
         let sortType = ProductSortType[headers['sorttype']]
         sortType = sortType === undefined ? ProductSortType.CodeAsc : sortType
 
@@ -26,9 +26,9 @@ export class ProductController {
         let pageSize = parseInt(headers['pagesize'])
         pageSize = isNaN(pageSize) ? 30 : pageSize
 
-        let page = await this.productService.list(query, sortType, pageIndex, pageSize)
+        let page = await this.service.list(query, sortType, pageIndex, pageSize)
 
-        return response
+        response
             .set('SortType', ProductSortType[sortType])
             .set('PageIndex', pageIndex.toString())
             .set('PageSize', pageSize.toString())
