@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common'
+import { CategoryModel } from './category.interface'
 import { CategoryService } from './category.service'
+import { Body, Controller, Param, Patch } from '@nestjs/common'
 
 @Controller('categories')
 export class CategoryController {
@@ -7,8 +8,16 @@ export class CategoryController {
         private readonly service: CategoryService
     ) { }
 
-    @Get()
-    public async hello(): Promise<string> {
-        return 'hello'
+    @Patch(':id')
+    public async patch(@Param('id') id: string, @Body() body: any): Promise<CategoryModel> {
+        let category = await this.service.read(id)
+
+        if (body.code !== undefined)
+            category.code = body.code.toString()
+
+        if (body.description !== undefined)
+            category.description = body.description.toString()
+
+        return await this.service.update(category)
     }
 }
