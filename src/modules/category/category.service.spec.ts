@@ -46,7 +46,7 @@ describe('CategoryService', () => {
       await expect(readPromise()).rejects.toThrow(NotFoundException)
     })
 
-    it('retrieve the category', async () => {
+    it('retrieves the category', async () => {
       let uuid = 'eda1da2b-494c-44bc-8e9c-6f40644a70c9'
 
       await getRepository(CategoryEntity).insert({
