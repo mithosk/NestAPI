@@ -60,4 +60,35 @@ describe('CategoryService', () => {
     })
 
   })
+
+  describe('update', () => {
+
+    it('edit the category', async () => {
+      let uuid = '54e474e8-df25-4dbf-9b6f-fce4b5bd5bea'
+
+      await getRepository(CategoryEntity).insert({
+        uuid: uuid,
+        code: 'CATEGORY_CODE_1',
+        description: 'category description 1'
+      })
+
+      let categoryModel = await service.update({
+        id: uuid,
+        code: 'CATEGORY_CODE_2',
+        description: 'category description 2'
+      })
+
+      expect(categoryModel.code).toEqual('CATEGORY_CODE_2')
+      expect(categoryModel.description).toEqual('category description 2')
+
+      let categoryEntity = await getRepository(CategoryEntity)
+        .createQueryBuilder('cat')
+        .where('cat.uuid=:uuid', { uuid: uuid })
+        .getOne()
+
+      expect(categoryEntity.code).toEqual('CATEGORY_CODE_2')
+      expect(categoryEntity.description).toEqual('category description 2')
+    })
+
+  })
 })
