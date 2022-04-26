@@ -1,9 +1,9 @@
-import { getConnection } from 'typeorm'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { NotFoundException } from '@nestjs/common'
 import { CategoryModel } from './category.interface'
 import { CategoryService } from './category.service'
 import { Test, TestingModule } from '@nestjs/testing'
+import { getConnection, getRepository } from 'typeorm'
 import { ProductEntity } from '../../data/entities/product.entity'
 import { CategoryEntity } from '../../data/entities/category.entity'
 import { CategoryRepository } from '../../data/repositories/category.repository'
@@ -44,6 +44,19 @@ describe('CategoryService', () => {
       const readPromise = async (): Promise<CategoryModel> => service.read('216e9e72-3af2-4202-ba9f-6ef1f8cc7ab4')
 
       await expect(readPromise()).rejects.toThrow(NotFoundException)
+    })
+
+    it('retrieve the category', async () => {
+      let uuid = 'eda1da2b-494c-44bc-8e9c-6f40644a70c9'
+
+      await getRepository(CategoryEntity).insert({
+        uuid: uuid,
+        code: 'CATEGORY_CODE'
+      })
+
+      let category = await service.read(uuid)
+
+      expect(category.code).toEqual('CATEGORY_CODE')
     })
 
   })
