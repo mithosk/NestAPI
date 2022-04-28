@@ -12,7 +12,7 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) { }
 
-    public async login(credentials: LoginRequest): Promise<LoginResponse> {
+    public async createToken(credentials: LoginRequest): Promise<LoginResponse> {
         let user = await this.userRepository.findByEmail(credentials.email)
         if (user === undefined)
             throw new ForbiddenException('user not found')
