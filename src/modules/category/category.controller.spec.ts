@@ -43,6 +43,37 @@ describe('CategoryController', () => {
 
   describe('patch', () => {
 
+    it('updates code', async () => {
+      jest.spyOn(service, 'read').mockImplementation(() => Promise.resolve({
+        id: 'f1c4bdbe-935f-45a7-a977-7edb0c864e4b',
+        code: 'CATEGORY_CODE_1',
+        description: 'category description 1'
+      }))
+
+      let updateCode: string
+      let updateDescription: string
+      jest.spyOn(service, 'update').mockImplementation(async (category: CategoryModel) => {
+        updateCode = category.code
+        updateDescription = category.description
+
+        return {
+          id: '4d037bcd-8388-448d-a0c1-f79727164b0b',
+          code: 'CATEGORY_CODE_2',
+          description: 'category description 2'
+        }
+      })
+
+      let category = await controller.patch('3cd50e1f-2214-4eed-a1dd-bdf4018f88cb', {
+        code: 'CATEGORY_CODE_3'
+      })
+
+      expect(updateCode).toEqual('CATEGORY_CODE_3')
+      expect(updateDescription).toEqual('category description 1')
+
+      expect(category.code).toEqual('CATEGORY_CODE_2')
+      expect(category.description).toEqual('category description 2')
+    })
+
     it('updates code and description', async () => {
       jest.spyOn(service, 'read').mockImplementation(() => Promise.resolve({
         id: '90e49f64-b92e-4c9f-bc43-8c205295149b',
