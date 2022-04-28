@@ -1,6 +1,7 @@
 import { getConnection } from 'typeorm'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { CategoryService } from './category.service'
+import { CategoryModel } from './category.interface'
 import { Test, TestingModule } from '@nestjs/testing'
 import { CategoryController } from './category.controller'
 import { ProductEntity } from '../../data/entities/product.entity'
@@ -21,7 +22,7 @@ describe('CategoryController', () => {
         ]),
         TypeOrmModule.forRoot({
           type: 'sqlite',
-          database: 'sqlite/8273b58b-be7a-47bd-813c-4f235edf1bce',
+          database: 'sqlite/894b01f5-f586-49a3-8423-b8ec6c410d16',
           entities: [
             CategoryEntity,
             ProductEntity
@@ -44,21 +45,31 @@ describe('CategoryController', () => {
 
     it('updates code and description', async () => {
       jest.spyOn(service, 'read').mockImplementation(() => Promise.resolve({
-        id: 'a4f6fd78-7b42-44ed-948c-9f0f28dd8caf',
+        id: '90e49f64-b92e-4c9f-bc43-8c205295149b',
         code: 'CATEGORY_CODE_1',
         description: 'category description 1'
       }))
 
-      jest.spyOn(service, 'update').mockImplementation(() => Promise.resolve({
-        id: '3ee405f3-3558-4a77-bdab-49410f39107d',
-        code: 'CATEGORY_CODE_2',
-        description: 'category description 2'
-      }))
+      let updateCode: string
+      let updateDescription: string
+      jest.spyOn(service, 'update').mockImplementation(async (category: CategoryModel) => {
+        updateCode = category.code
+        updateDescription = category.description
 
-      let category = await controller.patch('9671b89b-cb60-4832-991e-ab2ccb16c79b', {
+        return {
+          id: '69d5567f-20d0-4487-8601-a2b55cc035e4',
+          code: 'CATEGORY_CODE_2',
+          description: 'category description 2'
+        }
+      })
+
+      let category = await controller.patch('ede45ec6-f751-4140-89aa-60fc6a0ad44b', {
         code: 'CATEGORY_CODE_3',
         description: 'category description 3'
       })
+
+      expect(updateCode).toEqual('CATEGORY_CODE_3')
+      expect(updateDescription).toEqual('category description 3')
 
       expect(category.code).toEqual('CATEGORY_CODE_2')
       expect(category.description).toEqual('category description 2')
