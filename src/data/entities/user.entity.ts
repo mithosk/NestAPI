@@ -18,7 +18,7 @@ export class UserEntity {
     @Column()
     passwordHash: string
 
-    @Column()
+    @Column({ nullable: true })
     accessKey: string
 
     @Column()
