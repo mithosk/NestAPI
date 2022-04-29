@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { JwtService } from '@nestjs/jwt'
 import { sha512 } from 'sha512-crypt-ts'
 import { LoginRequest, LoginResponse } from './auth.interface'
 import { ForbiddenException, Injectable } from '@nestjs/common'
@@ -8,11 +7,10 @@ import { UserRepository } from 'src/data/repositories/user.repository'
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly userRepository: UserRepository,
-        private readonly jwtService: JwtService
+        private readonly userRepository: UserRepository
     ) { }
 
-    public async createToken(credentials: LoginRequest): Promise<LoginResponse> {
+    public async validateCredentials(credentials: LoginRequest): Promise<LoginResponse> {
         let user = await this.userRepository.findByEmail(credentials.email)
         if (user === undefined)
             throw new ForbiddenException('user not found')
@@ -26,7 +24,7 @@ export class AuthService {
         }
 
         return {
-            token: this.jwtService.sign({ userId: user.uuid }),
+            token: undefined,
             refreshToken: user.accessKey,
             userId: user.uuid
         }
