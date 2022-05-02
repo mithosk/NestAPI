@@ -29,4 +29,11 @@ export class AuthService {
             userId: user.uuid
         }
     }
+
+    public async validateAccessKey(accessKey: string, userId: string): Promise<boolean> {
+        let user = await this.userRepository.findByUuid(userId)
+
+        return user !== undefined &&
+            user.accessKey === accessKey
+    }
 }
