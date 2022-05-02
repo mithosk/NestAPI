@@ -1,7 +1,7 @@
 import { JwtService } from '@nestjs/jwt'
 import { AuthService } from './auth.service'
-import { Body, Controller, Post } from '@nestjs/common'
-import { LoginRequest, LoginResponse } from './auth.interface'
+import { Body, Controller, ForbiddenException, Post } from '@nestjs/common'
+import { LoginRequest, LoginResponse, RefreshRequest, RefreshResponse } from './auth.interface'
 
 @Controller('rpc/auth')
 export class AuthController {
@@ -17,5 +17,15 @@ export class AuthController {
         response.token = this.jwtService.sign({ userId: response.userId })
 
         return response
+    }
+
+    @Post('refresh')
+    public async refresh(@Body() body: RefreshRequest): Promise<RefreshResponse> {
+        if (await this.service.validateAccessKey(body.refreshToken, body.userId) === false)
+            throw new ForbiddenException('invalid refresh token')
+
+        return {
+            token: this.jwtService.sign({ userId: body.userId })
+        }
     }
 }
