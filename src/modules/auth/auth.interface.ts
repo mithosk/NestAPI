@@ -15,3 +15,17 @@ export interface LoginResponse {
     refreshToken: string
     userId: string
 }
+
+export class RefreshRequest {
+    @IsString()
+    @IsNotEmpty()
+    userId: string
+
+    @IsString()
+    @IsNotEmpty()
+    refreshToken: string
+}
+
+export class RefreshResponse {
+    token: string
+}
