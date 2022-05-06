@@ -29,3 +29,11 @@ export class RefreshRequest {
 export class RefreshResponse {
     token: string
 }
+
+export class ResetRequest {
+    @IsString()
+    @IsNotEmpty()
+    userId: string
+}
+
+export class ResetResponse { }
