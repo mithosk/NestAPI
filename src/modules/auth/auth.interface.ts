@@ -30,10 +30,10 @@ export class RefreshResponse {
     token: string
 }
 
-export class ResetRequest {
+export class LogoutRequest {
     @IsString()
     @IsNotEmpty()
     userId: string
 }
 
-export class ResetResponse { }
+export class LogoutResponse { }
