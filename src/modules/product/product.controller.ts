@@ -1,7 +1,8 @@
+import { AuthGuard } from '@nestjs/passport'
 import { ProductService } from './product.service'
 import { Response as HttpResponse } from 'express'
 import { ProductModel, ProductQuery, ProductSortType } from './product.interface'
-import { Body, Controller, Get, Post, Query, Response, Headers, UsePipes, ValidationPipe } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, Response, Headers, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common'
 
 @Controller('products')
 export class ProductController {
@@ -10,6 +11,7 @@ export class ProductController {
     ) { }
 
     @Post()
+    @UseGuards(AuthGuard('jwt'))
     public async post(@Body() body: ProductModel): Promise<ProductModel> {
         return await this.service.create(body)
     }
