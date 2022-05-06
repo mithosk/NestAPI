@@ -42,7 +42,7 @@ export class AuthService {
         if (user === undefined)
             throw new ForbiddenException('user not found')
 
-        user.accessKey = undefined
+        user.accessKey = null
         await this.userRepository.save(user)
     }
 }
