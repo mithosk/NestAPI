@@ -1,9 +1,9 @@
 {
   "type": "mysql",
   "host": "localhost",
-  "port": 63238,
-  "username": "root",
-  "password": "root",
+  "port": 7769,
+  "username": "mithosk",
+  "password": "mithosk",
   "database": "nest-api",
   "migrationsTableName": "_migration",
   "entities": [
