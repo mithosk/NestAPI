@@ -36,4 +36,13 @@ export class AuthService {
         return user !== undefined &&
             user.accessKey === accessKey
     }
+
+    public async resetAccessKey(userId: string): Promise<void> {
+        let user = await this.userRepository.findByUuid(userId)
+        if (user === undefined)
+            throw new ForbiddenException('user not found')
+
+        user.accessKey = undefined
+        await this.userRepository.save(user)
+    }
 }
