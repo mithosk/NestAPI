@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { sha512 } from 'sha512-crypt-ts'
 import { LoginRequest, LoginResponse } from './auth.interface'
 import { ForbiddenException, Injectable } from '@nestjs/common'
-import { UserRepository } from 'src/data/repositories/user.repository'
+import { UserRepository } from '../../data/repositories/user.repository'
 
 @Injectable()
 export class AuthService {
