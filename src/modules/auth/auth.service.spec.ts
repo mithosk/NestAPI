@@ -127,5 +127,21 @@ describe('AuthService', () => {
       expect(valid).toEqual(false)
     })
 
+    it('returns false for bad user id', async () => {
+      await getRepository(UserEntity).insert({
+        uuid: '51f9c0da-dc98-48dd-80b6-7f5d4ec4fd34',
+        email: 'email@email.com',
+        passwordHash: 'hash',
+        accessKey: 'key',
+        name: 'name',
+        surname: 'surname',
+        registrationDate: new Date()
+      })
+
+      let valid = await service.validateAccessKey('key', '37673559-7d57-4eb5-a05a-c4cfea682021')
+
+      expect(valid).toEqual(false)
+    })
+
   })
 })
