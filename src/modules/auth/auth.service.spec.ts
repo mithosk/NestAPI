@@ -143,5 +143,23 @@ describe('AuthService', () => {
       expect(valid).toEqual(false)
     })
 
+    it('returns true with a valid access key', async () => {
+      let uuid = '3128a6b9-5f02-4141-813c-11827846bdf0'
+
+      await getRepository(UserEntity).insert({
+        uuid: uuid,
+        email: 'email@email.com',
+        passwordHash: 'hash',
+        accessKey: 'key',
+        name: 'name',
+        surname: 'surname',
+        registrationDate: new Date()
+      })
+
+      let valid = await service.validateAccessKey('key', uuid)
+
+      expect(valid).toEqual(true)
+    })
+
   })
 })
