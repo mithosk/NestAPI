@@ -39,6 +39,24 @@ describe('AuthService', () => {
 
   describe('validateCredentials', () => {
 
+    it('throws an exception for bad email', async () => {
+      await getRepository(UserEntity).insert({
+        uuid: '593fef95-d3d1-474f-9a84-c99ed2c14be3',
+        email: 'email@email.com',
+        passwordHash: sha512.hex('password'),
+        name: 'name',
+        surname: 'surname',
+        registrationDate: new Date()
+      })
+
+      const validateCredentialsPromise = async (): Promise<LoginResponse> => await service.validateCredentials({
+        email: 'email2@email.com',
+        password: 'password'
+      })
+
+      await expect(validateCredentialsPromise()).rejects.toThrow(ForbiddenException)
+    })
+
     it('throws an exception for bad password', async () => {
       await getRepository(UserEntity).insert({
         uuid: '7988a15f-ef46-4a48-bab9-296d5a6becf4',
