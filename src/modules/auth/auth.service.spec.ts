@@ -1,0 +1,91 @@
+import { sha512 } from 'sha512-crypt-ts'
+import { AuthService } from './auth.service'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { LoginResponse } from './auth.interface'
+import { ForbiddenException } from '@nestjs/common'
+import { Test, TestingModule } from '@nestjs/testing'
+import { getConnection, getRepository } from 'typeorm'
+import { UserEntity } from '../../data/entities/user.entity'
+import { UserRepository } from '../../data/repositories/user.repository'
+
+describe('AuthService', () => {
+  let service: AuthService
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [AuthService],
+      imports: [
+        TypeOrmModule.forFeature([
+          UserRepository
+        ]),
+        TypeOrmModule.forRoot({
+          type: 'sqlite',
+          database: 'sqlite/c7670b0f-cf3b-48f9-9ef3-b9df5e631914',
+          entities: [
+            UserEntity
+          ],
+          synchronize: true,
+          dropSchema: true
+        })
+      ]
+    }).compile()
+
+    service = module.get<AuthService>(AuthService)
+  })
+
+  afterEach(async () => {
+    await getConnection().close()
+  })
+
+  describe('validateCredentials', () => {
+
+    it('throws an exception for bad password', async () => {
+      await getRepository(UserEntity).insert({
+        uuid: '7988a15f-ef46-4a48-bab9-296d5a6becf4',
+        email: 'email@email.com',
+        passwordHash: 'hash',
+        name: 'name',
+        surname: 'surname',
+        registrationDate: new Date()
+      })
+
+      const validateCredentialsPromise = async (): Promise<LoginResponse> => await service.validateCredentials({
+        email: 'email@email.com',
+        password: 'password'
+      })
+
+      await expect(validateCredentialsPromise()).rejects.toThrow(ForbiddenException)
+    })
+
+    it('checks valid credentials', async () => {
+      let uuid = '569f0bf6-d061-4123-a10a-2e70ccac4177'
+
+      await getRepository(UserEntity).insert({
+        uuid: uuid,
+        email: 'email@email.com',
+        passwordHash: sha512.hex('password'),
+        name: 'name',
+        surname: 'surname',
+        registrationDate: new Date()
+      })
+
+      let validationResult = await service.validateCredentials({
+        email: 'email@email.com',
+        password: 'password'
+      })
+
+      expect(validationResult.token).toBeUndefined()
+      expect(validationResult.refreshToken).toBeDefined()
+      expect(validationResult.refreshToken.length).toBeGreaterThan(0)
+      expect(validationResult.userId).toEqual(uuid)
+
+      let user = await getRepository(UserEntity)
+        .createQueryBuilder('use')
+        .where('use.uuid=:uuid', { uuid: uuid })
+        .getOne()
+
+      expect(user.accessKey).toEqual(validationResult.refreshToken)
+    })
+
+  })
+})
