@@ -106,4 +106,26 @@ describe('AuthService', () => {
     })
 
   })
+
+  describe('validateAccessKey', () => {
+
+    it('returns false for bad access key', async () => {
+      let uuid = 'b6b3b90c-768d-498e-9ed4-e1fd9208ee97'
+
+      await getRepository(UserEntity).insert({
+        uuid: uuid,
+        email: 'email@email.com',
+        passwordHash: 'hash',
+        accessKey: 'key',
+        name: 'name',
+        surname: 'surname',
+        registrationDate: new Date()
+      })
+
+      let valid = await service.validateAccessKey('key2', uuid)
+
+      expect(valid).toEqual(false)
+    })
+
+  })
 })
