@@ -89,4 +89,20 @@ describe('AuthController', () => {
     })
 
   })
+
+  describe('refresh', () => {
+
+    it('creates a jwt token', async () => {
+      jest.spyOn(service, 'validateAccessKey').mockImplementation(() => Promise.resolve(true))
+
+      let response = await controller.refresh({
+        userId: undefined,
+        refreshToken: undefined
+      })
+
+      expect(response.token).toBeDefined()
+      expect(response.token.length).toBeGreaterThan(0)
+    })
+
+  })
 })
