@@ -2,7 +2,9 @@ import { JwtModule } from '@nestjs/jwt'
 import { getConnection } from 'typeorm'
 import { AuthService } from './auth.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { LogoutResponse } from './auth.interface'
 import { AuthController } from './auth.controller'
+import { ForbiddenException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { UserEntity } from '../../data/entities/user.entity'
 import { ConfigModule, ConfigService } from '@nestjs/config'
@@ -102,6 +104,27 @@ describe('AuthController', () => {
 
       expect(response.token).toBeDefined()
       expect(response.token.length).toBeGreaterThan(0)
+    })
+
+  })
+
+  describe('logout', () => {
+
+    it('throws an exception when another user logout', async () => {
+      jest.spyOn(service, 'resetAccessKey').mockImplementation()
+
+      const logoutPromise = async (): Promise<LogoutResponse> => await controller.logout(
+        {
+          userId: '37d3d432-db0c-42dc-a74e-86c276c3ebfd'
+        },
+        {
+          user: {
+            id: '8d257305-d385-4e16-9252-bfb59e4f2c64'
+          }
+        }
+      )
+
+      await expect(logoutPromise()).rejects.toThrow(ForbiddenException)
     })
 
   })
