@@ -162,4 +162,31 @@ describe('AuthService', () => {
     })
 
   })
+
+  describe('resetAccessKey', () => {
+
+    it('cleans the access key', async () => {
+      let uuid = 'de98759c-ebfc-4609-b3a1-c8af68b93754'
+
+      await getRepository(UserEntity).insert({
+        uuid: uuid,
+        email: 'email@email.com',
+        passwordHash: 'hash',
+        accessKey: 'key',
+        name: 'name',
+        surname: 'surname',
+        registrationDate: new Date()
+      })
+
+      await service.resetAccessKey(uuid)
+
+      let user = await getRepository(UserEntity)
+        .createQueryBuilder('use')
+        .where('use.uuid=:uuid', { uuid: uuid })
+        .getOne()
+
+      expect(user.accessKey).toBeNull()
+    })
+
+  })
 })
