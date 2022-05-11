@@ -11,3 +11,4 @@ services:
       MYSQL_DATABASE: nest-api
       MYSQL_USER: mithosk
       MYSQL_PASSWORD: mithosk
+      MYSQL_ROOT_PASSWORD: mithosk
