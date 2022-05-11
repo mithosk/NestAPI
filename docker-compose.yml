@@ -3,7 +3,7 @@ services:
   database:
     image: mysql:latest
     volumes:
-      - ./mysql/db:/var/lib/mysql
+      - ./docker/mysql/db:/var/lib/mysql
     restart: always
     ports:
       - 7769:3306
