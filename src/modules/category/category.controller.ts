@@ -19,7 +19,7 @@ export class CategoryController {
             if (body.code === null)
                 throw new ForbiddenException('code cannot be null')
             else if (typeof body.code !== 'string')
-                throw new ForbiddenException('code it must be a string')
+                throw new ForbiddenException('code must be a string')
             else
                 category.code = body.code
         }
@@ -27,7 +27,7 @@ export class CategoryController {
         //description
         if (body.description !== undefined) {
             if (body.description !== null && typeof body.description !== 'string')
-                throw new ForbiddenException('description it must be a string')
+                throw new ForbiddenException('description must be a string')
             else
                 category.description = body.description
         }
