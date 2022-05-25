@@ -1,3 +1,3 @@
 export interface HttpUser {
-    id: string
+	id: string
 }
