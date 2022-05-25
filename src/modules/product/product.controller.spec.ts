@@ -52,7 +52,7 @@ describe('ProductController', () => {
 				})
 			)
 
-			let product = await controller.post({
+			const product = await controller.post({
 				id: '5f4f5f67-cabd-4d41-93a1-4e9a756dde1c',
 				code: 'PRODUCT_CODE_2',
 				description: 'product description 2',
@@ -96,7 +96,7 @@ describe('ProductController', () => {
 
 			//response mock
 			let responseBody: ProductModel[]
-			let httpResponse = <HttpResponse<any, Record<string, any>>>{
+			const httpResponse = <HttpResponse<any, Record<string, any>>>{
 				set(key: string, value: string) {
 					return this
 				},
@@ -125,8 +125,8 @@ describe('ProductController', () => {
 			)
 
 			//response mock
-			let responseHeader: { [id: string]: string } = {}
-			let httpResponse = <HttpResponse<any, Record<string, any>>>{
+			const responseHeader: { [id: string]: string } = {}
+			const httpResponse = <HttpResponse<any, Record<string, any>>>{
 				set(key: string, value: string) {
 					responseHeader[key] = value
 					return this
