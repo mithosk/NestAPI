@@ -3,13 +3,13 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class ProductBus {
-    private server: Server
+	private server: Server
 
-    public setServer(server: Server): void {
-        this.server = server
-    }
+	public setServer(server: Server): void {
+		this.server = server
+	}
 
-    public notify(event: string, message: any): void {
-        this.server.emit(event, message)
-    }
+	public notify(event: string, message: any): void {
+		this.server.emit(event, message)
+	}
 }
