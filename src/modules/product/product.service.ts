@@ -12,66 +12,70 @@ import { ProductModel, ProductQuery, ProductSortType } from './product.interface
 
 @Injectable()
 export class ProductService {
-  constructor(
-    private readonly categoryRepository: CategoryRepository,
-    private readonly productRepository: ProductRepository,
-    private readonly dataConnection: Connection,
-    private readonly productBus: ProductBus
-  ) { }
+	constructor(
+		private readonly categoryRepository: CategoryRepository,
+		private readonly productRepository: ProductRepository,
+		private readonly dataConnection: Connection,
+		private readonly productBus: ProductBus
+	) {}
 
-  public async create(product: ProductModel): Promise<ProductModel> {
-    let productEntity = await this.productRepository.findByCode(product.code)
-    if (productEntity !== undefined)
-      throw new ForbiddenException('product code already used')
+	public async create(product: ProductModel): Promise<ProductModel> {
+		let productEntity = await this.productRepository.findByCode(product.code)
+		if (productEntity !== undefined) throw new ForbiddenException('product code already used')
 
-    let categoryEntity = await this.categoryRepository.findByCode(product.categoryCode)
-    if (categoryEntity === undefined) {
-      categoryEntity = new CategoryEntity()
-      categoryEntity.code = product.categoryCode
-    }
+		let categoryEntity = await this.categoryRepository.findByCode(product.categoryCode)
+		if (categoryEntity === undefined) {
+			categoryEntity = new CategoryEntity()
+			categoryEntity.code = product.categoryCode
+		}
 
-    productEntity = new ProductEntity()
-    productEntity.code = product.code
-    productEntity.description = product.description
-    productEntity.price = product.price
-    productEntity.insertDarte = new Date()
-    productEntity.category = categoryEntity
+		productEntity = new ProductEntity()
+		productEntity.code = product.code
+		productEntity.description = product.description
+		productEntity.price = product.price
+		productEntity.insertDarte = new Date()
+		productEntity.category = categoryEntity
 
-    await this.dataConnection.transaction(async em => {
-      await em.save(categoryEntity)
-      await em.save(productEntity)
-    })
+		await this.dataConnection.transaction(async em => {
+			await em.save(categoryEntity)
+			await em.save(productEntity)
+		})
 
-    let savedProduct = this.map(productEntity)
+		let savedProduct = this.map(productEntity)
 
-    this.productBus.notify('ProductCreated', savedProduct)
+		this.productBus.notify('ProductCreated', savedProduct)
 
-    return savedProduct
-  }
+		return savedProduct
+	}
 
-  public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductPage> {
-    let filter: ProductFilter = {
-      text: query.text
-    }
+	public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductPage> {
+		let filter: ProductFilter = {
+			text: query.text
+		}
 
-    let products = await this.productRepository.findByFilter(filter, ProductSort[ProductSortType[sort]], (pageIndex - 1) * pageSize, pageSize)
-    let productCount = await this.productRepository.countByFilter(filter)
+		let products = await this.productRepository.findByFilter(
+			filter,
+			ProductSort[ProductSortType[sort]],
+			(pageIndex - 1) * pageSize,
+			pageSize
+		)
+		let productCount = await this.productRepository.countByFilter(filter)
 
-    return {
-      products: products.map(per => this.map(per)),
-      pageCount: Math.ceil(productCount / pageSize),
-      productCount: productCount
-    }
-  }
+		return {
+			products: products.map(per => this.map(per)),
+			pageCount: Math.ceil(productCount / pageSize),
+			productCount: productCount
+		}
+	}
 
-  private map(entity: ProductEntity): ProductModel {
-    return <ProductModel>{
-      id: entity.uuid,
-      code: entity.code,
-      description: entity.description,
-      categoryId: entity.category.uuid,
-      categoryCode: entity.category.code,
-      price: entity.price
-    }
-  }
+	private map(entity: ProductEntity): ProductModel {
+		return <ProductModel>{
+			id: entity.uuid,
+			code: entity.code,
+			description: entity.description,
+			categoryId: entity.category.uuid,
+			categoryCode: entity.category.code,
+			price: entity.price
+		}
+	}
 }
