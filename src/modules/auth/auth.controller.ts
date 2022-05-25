@@ -18,7 +18,7 @@ export class AuthController {
 	@Post('login')
 	@HttpCode(200)
 	public async login(@Body() body: LoginRequest): Promise<LoginResponse> {
-		let response = await this.service.validateCredentials(body)
+		const response = await this.service.validateCredentials(body)
 
 		response.token = this.jwtService.sign({ userId: response.userId })
 
