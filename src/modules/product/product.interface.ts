@@ -1,36 +1,36 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class ProductModel {
-    id: string
+	id: string
 
-    @IsString()
-    @IsNotEmpty()
-    code: string
+	@IsString()
+	@IsNotEmpty()
+	code: string
 
-    @IsString()
-    @IsNotEmpty()
-    description: string
+	@IsString()
+	@IsNotEmpty()
+	description: string
 
-    categoryId: string
+	categoryId: string
 
-    @IsString()
-    @IsNotEmpty()
-    categoryCode: string
+	@IsString()
+	@IsNotEmpty()
+	categoryCode: string
 
-    @IsNumber()
-    @IsNotEmpty()
-    price: number
+	@IsNumber()
+	@IsNotEmpty()
+	price: number
 }
 
 export class ProductQuery {
-    @IsString()
-    @IsOptional()
-    text: string
+	@IsString()
+	@IsOptional()
+	text: string
 }
 
 export enum ProductSortType {
-    CodeAsc = 0,
-    CodeDesc = 1,
-    PriceAsc = 2,
-    PriceDesc = 3
+	CodeAsc = 0,
+	CodeDesc = 1,
+	PriceAsc = 2,
+	PriceDesc = 3
 }
