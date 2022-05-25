@@ -10,7 +10,7 @@ export class CategoryController {
 	@Patch(':id')
 	@UseGuards(AuthGuard('jwt'))
 	public async patch(@Param('id') id: string, @Body() body: Partial<CategoryModel>): Promise<CategoryModel> {
-		let category = await this.service.read(id)
+		const category = await this.service.read(id)
 
 		//code
 		if (body.code !== undefined) {
