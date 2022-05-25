@@ -7,7 +7,7 @@ export class CategoryService {
 	constructor(private readonly categoryRepository: CategoryRepository) {}
 
 	public async read(id: string): Promise<CategoryModel> {
-		let entity = await this.categoryRepository.findByUuid(id)
+		const entity = await this.categoryRepository.findByUuid(id)
 		if (entity === undefined) throw new NotFoundException('category not found')
 
 		return {
