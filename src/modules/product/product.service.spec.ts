@@ -46,7 +46,7 @@ describe('ProductService', () => {
 				busMessage = message
 			})
 
-			let productModel = await service.create({
+			const productModel = await service.create({
 				id: undefined,
 				code: 'PRODUCT_CODE',
 				description: 'product description',
@@ -55,7 +55,7 @@ describe('ProductService', () => {
 				price: 12.45
 			})
 
-			let productEntity: ProductEntity = await getRepository(ProductEntity)
+			const productEntity: ProductEntity = await getRepository(ProductEntity)
 				.createQueryBuilder('pro')
 				.where('pro.code=:code', { code: 'PRODUCT_CODE' })
 				.leftJoinAndSelect('pro.category', 'cat')
@@ -94,7 +94,7 @@ describe('ProductService', () => {
 				code: 'CATEGORY_CODE'
 			})
 
-			let productModel = await service.create({
+			const productModel = await service.create({
 				id: undefined,
 				code: 'PRODUCT_CODE',
 				description: 'product description',
@@ -103,7 +103,7 @@ describe('ProductService', () => {
 				price: 5
 			})
 
-			let productEntity: ProductEntity = await getRepository(ProductEntity)
+			const productEntity: ProductEntity = await getRepository(ProductEntity)
 				.createQueryBuilder('pro')
 				.where('pro.code=:code', { code: 'PRODUCT_CODE' })
 				.leftJoinAndSelect('pro.category', 'cat')
@@ -154,7 +154,7 @@ describe('ProductService', () => {
 
 	describe('list', () => {
 		it('returns the second page', async () => {
-			let categoryEntity: CategoryEntity = new CategoryEntity()
+			const categoryEntity: CategoryEntity = new CategoryEntity()
 			categoryEntity.code = 'CATEGORY_CODE'
 			await getRepository(CategoryEntity).insert(categoryEntity)
 
@@ -167,14 +167,14 @@ describe('ProductService', () => {
 					category: categoryEntity
 				})
 
-			let productPage = await service.list({ text: undefined }, ProductSortType.CodeAsc, 2, 10)
+			const productPage = await service.list({ text: undefined }, ProductSortType.CodeAsc, 2, 10)
 
 			expect(productPage.products.length).toBe(1)
 			expect(productPage.pageCount).toBe(2)
 		})
 
 		it('filters products by text', async () => {
-			let categoryEntity: CategoryEntity = new CategoryEntity()
+			const categoryEntity: CategoryEntity = new CategoryEntity()
 			categoryEntity.code = 'CATEGORY_CODE'
 			await getRepository(CategoryEntity).insert(categoryEntity)
 
@@ -205,13 +205,13 @@ describe('ProductService', () => {
 					category: categoryEntity
 				})
 
-			let page = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
+			const page = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
 
 			expect(page.productCount).toBe(20)
 		})
 
 		it('sort products by price', async () => {
-			let categoryEntity: CategoryEntity = new CategoryEntity()
+			const categoryEntity: CategoryEntity = new CategoryEntity()
 			categoryEntity.code = 'CATEGORY_CODE'
 			await getRepository(CategoryEntity).insert(categoryEntity)
 
@@ -224,7 +224,7 @@ describe('ProductService', () => {
 					category: categoryEntity
 				})
 
-			let page = await service.list({ text: undefined }, ProductSortType.PriceDesc, 1, 1)
+			const page = await service.list({ text: undefined }, ProductSortType.PriceDesc, 1, 1)
 
 			expect(page.products[0].price).toBe(99)
 		})
