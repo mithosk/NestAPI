@@ -59,7 +59,7 @@ describe('AuthController', () => {
 				})
 			)
 
-			let response = await controller.login({
+			const response = await controller.login({
 				email: undefined,
 				password: undefined
 			})
@@ -69,8 +69,8 @@ describe('AuthController', () => {
 		})
 
 		it('returns refresh token and user id', async () => {
-			let refreshToken = '2c20e0ba-0de7-434d-a620-92b6168d8b19'
-			let userId = '1003ff3f-b1ab-4760-9de0-7d65064385d7'
+			const refreshToken = '2c20e0ba-0de7-434d-a620-92b6168d8b19'
+			const userId = '1003ff3f-b1ab-4760-9de0-7d65064385d7'
 
 			jest.spyOn(service, 'validateCredentials').mockImplementation(() =>
 				Promise.resolve({
@@ -80,7 +80,7 @@ describe('AuthController', () => {
 				})
 			)
 
-			let response = await controller.login({
+			const response = await controller.login({
 				email: undefined,
 				password: undefined
 			})
@@ -94,7 +94,7 @@ describe('AuthController', () => {
 		it('creates a jwt token', async () => {
 			jest.spyOn(service, 'validateAccessKey').mockImplementation(() => Promise.resolve(true))
 
-			let response = await controller.refresh({
+			const response = await controller.refresh({
 				userId: undefined,
 				refreshToken: undefined
 			})
