@@ -41,7 +41,7 @@ export class ProductService {
 			await em.save(productEntity)
 		})
 
-		let savedProduct = this.map(productEntity)
+		const savedProduct = this.map(productEntity)
 
 		this.productBus.notify('ProductCreated', savedProduct)
 
@@ -49,17 +49,17 @@ export class ProductService {
 	}
 
 	public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductPage> {
-		let filter: ProductFilter = {
+		const filter: ProductFilter = {
 			text: query.text
 		}
 
-		let products = await this.productRepository.findByFilter(
+		const products = await this.productRepository.findByFilter(
 			filter,
 			ProductSort[ProductSortType[sort]],
 			(pageIndex - 1) * pageSize,
 			pageSize
 		)
-		let productCount = await this.productRepository.countByFilter(filter)
+		const productCount = await this.productRepository.countByFilter(filter)
 
 		return {
 			products: products.map(per => this.map(per)),
