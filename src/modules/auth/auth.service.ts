@@ -9,7 +9,7 @@ export class AuthService {
 	constructor(private readonly userRepository: UserRepository) {}
 
 	public async validateCredentials(credentials: LoginRequest): Promise<LoginResponse> {
-		let user = await this.userRepository.findByEmail(credentials.email)
+		const user = await this.userRepository.findByEmail(credentials.email)
 		if (user === undefined) throw new ForbiddenException('user not found')
 
 		if (user.passwordHash !== sha512.hex(credentials.password)) throw new ForbiddenException('wrong password')
@@ -27,13 +27,13 @@ export class AuthService {
 	}
 
 	public async validateAccessKey(accessKey: string, userId: string): Promise<boolean> {
-		let user = await this.userRepository.findByUuid(userId)
+		const user = await this.userRepository.findByUuid(userId)
 
 		return user !== undefined && user.accessKey === accessKey
 	}
 
 	public async resetAccessKey(userId: string): Promise<void> {
-		let user = await this.userRepository.findByUuid(userId)
+		const user = await this.userRepository.findByUuid(userId)
 		if (user === undefined) throw new ForbiddenException('user not found')
 
 		user.accessKey = null
