@@ -59,7 +59,7 @@ describe('CategoryController', () => {
 				}
 			})
 
-			let category = await controller.patch('3cd50e1f-2214-4eed-a1dd-bdf4018f88cb', {
+			const category = await controller.patch('3cd50e1f-2214-4eed-a1dd-bdf4018f88cb', {
 				code: 'CATEGORY_CODE_3'
 			})
 
@@ -92,7 +92,7 @@ describe('CategoryController', () => {
 				}
 			})
 
-			let category = await controller.patch('277000fb-b44c-4b51-883f-ee22d96968b6', {
+			const category = await controller.patch('277000fb-b44c-4b51-883f-ee22d96968b6', {
 				description: 'category description 3'
 			})
 
@@ -125,7 +125,7 @@ describe('CategoryController', () => {
 				}
 			})
 
-			let category = await controller.patch('ede45ec6-f751-4140-89aa-60fc6a0ad44b', {
+			const category = await controller.patch('ede45ec6-f751-4140-89aa-60fc6a0ad44b', {
 				code: 'CATEGORY_CODE_3',
 				description: 'category description 3'
 			})
