@@ -8,12 +8,8 @@ import { ProductRepository } from 'src/data/repositories/product.repository'
 import { CategoryRepository } from 'src/data/repositories/category.repository'
 
 @Module({
-  controllers: [ProductController],
-  providers: [ProductService, ProductGateway, ProductBus],
-  imports: [TypeOrmModule.forFeature([
-    CategoryRepository,
-    ProductRepository
-  ])]
+	controllers: [ProductController],
+	providers: [ProductService, ProductGateway, ProductBus],
+	imports: [TypeOrmModule.forFeature([CategoryRepository, ProductRepository])]
 })
-
-export class ProductModule { }
+export class ProductModule {}
