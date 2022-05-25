@@ -1,33 +1,29 @@
 import { Entity, Column, PrimaryGeneratedColumn, Generated } from 'typeorm'
 
-
 @Entity('users')
 export class UserEntity {
+	@PrimaryGeneratedColumn()
+	id: number
 
-    @PrimaryGeneratedColumn()
-    id: number
+	@Generated('uuid')
+	@Column({ unique: true })
+	uuid: string
 
+	@Column({ unique: true })
+	email: string
 
-    @Generated('uuid')
-    @Column({ unique: true })
-    uuid: string
+	@Column()
+	passwordHash: string
 
-    @Column({ unique: true })
-    email: string
+	@Column({ nullable: true })
+	accessKey: string
 
-    @Column()
-    passwordHash: string
+	@Column()
+	name: string
 
-    @Column({ nullable: true })
-    accessKey: string
+	@Column()
+	surname: string
 
-    @Column()
-    name: string
-
-    @Column()
-    surname: string
-
-    @Column()
-    registrationDate: Date
-
+	@Column()
+	registrationDate: Date
 }
