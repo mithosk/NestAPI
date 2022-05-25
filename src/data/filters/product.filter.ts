@@ -1,3 +1,3 @@
 export interface ProductFilter {
-    text: string
+	text: string
 }
