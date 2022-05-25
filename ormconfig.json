@@ -1,19 +1,15 @@
 {
-  "type": "mysql",
-  "host": "localhost",
-  "port": 7769,
-  "username": "mithosk",
-  "password": "mithosk",
-  "database": "nest-api",
-  "migrationsTableName": "_migration",
-  "entities": [
-    "dist/data/entities/*.entity.js"
-  ],
-  "migrations": [
-    "dist/data/migrations/*.js"
-  ],
-  "cli": {
-    "entitiesDir": "src/data/entities",
-    "migrationsDir": "src/data/migrations"
-  }
+	"type": "mysql",
+	"host": "localhost",
+	"port": 7769,
+	"username": "mithosk",
+	"password": "mithosk",
+	"database": "nest-api",
+	"migrationsTableName": "_migration",
+	"entities": ["dist/data/entities/*.entity.js"],
+	"migrations": ["dist/data/migrations/*.js"],
+	"cli": {
+		"entitiesDir": "src/data/entities",
+		"migrationsDir": "src/data/migrations"
+	}
 }
