@@ -5,12 +5,6 @@ import { ProductModule } from './modules/product/product.module'
 import { CategoryModule } from './modules/category/category.module'
 
 @Module({
-  imports: [
-    AuthModule,
-    CategoryModule,
-    ProductModule,
-    TypeOrmModule.forRoot()
-  ]
+	imports: [AuthModule, CategoryModule, ProductModule, TypeOrmModule.forRoot()]
 })
-
-export class AppModule { }
+export class AppModule {}
