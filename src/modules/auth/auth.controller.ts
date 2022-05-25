@@ -1,19 +1,17 @@
 import { JwtService } from '@nestjs/jwt'
 import { AuthService } from './auth.service'
 import { AuthGuard } from '@nestjs/passport'
+import { Request as HttpRequest } from 'express'
+import { HttpUser } from 'src/common/http-user.common'
 import { Body, Controller, ForbiddenException, Post, UseGuards, Request, HttpCode } from '@nestjs/common'
-import {
-	LoginRequest,
-	LoginResponse,
-	RefreshRequest,
-	RefreshResponse,
-	LogoutRequest,
-	LogoutResponse
-} from './auth.interface'
+import { LoginRequest, LoginResponse, RefreshRequest, RefreshResponse, LogoutRequest, LogoutResponse } from './auth.interface'
 
 @Controller('rpc/auth')
 export class AuthController {
-	constructor(private readonly service: AuthService, private readonly jwtService: JwtService) {}
+	constructor(
+		private readonly service: AuthService,
+		private readonly jwtService: JwtService
+	) { }
 
 	@Post('login')
 	@HttpCode(200)
@@ -39,8 +37,10 @@ export class AuthController {
 	@HttpCode(200)
 	@Post('logout')
 	@UseGuards(AuthGuard('jwt'))
-	public async logout(@Body() body: LogoutRequest, @Request() request: any): Promise<LogoutResponse> {
-		if (body.userId !== request.user.id) throw new ForbiddenException('another user cannot be logged out')
+	public async logout(@Body() body: LogoutRequest, @Request() request: HttpRequest): Promise<LogoutResponse> {
+		let user = request.user as HttpUser
+		if (body.userId !== user.id)
+			throw new ForbiddenException('another user cannot be logged out')
 
 		await this.service.resetAccessKey(body.userId)
 
