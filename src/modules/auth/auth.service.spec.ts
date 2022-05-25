@@ -73,7 +73,7 @@ describe('AuthService', () => {
 		})
 
 		it('checks valid credentials', async () => {
-			let uuid = '569f0bf6-d061-4123-a10a-2e70ccac4177'
+			const uuid = '569f0bf6-d061-4123-a10a-2e70ccac4177'
 
 			await getRepository(UserEntity).insert({
 				uuid: uuid,
@@ -84,7 +84,7 @@ describe('AuthService', () => {
 				registrationDate: new Date()
 			})
 
-			let validationResult = await service.validateCredentials({
+			const validationResult = await service.validateCredentials({
 				email: 'email@email.com',
 				password: 'password'
 			})
@@ -94,7 +94,7 @@ describe('AuthService', () => {
 			expect(validationResult.refreshToken.length).toBeGreaterThan(0)
 			expect(validationResult.userId).toEqual(uuid)
 
-			let user = await getRepository(UserEntity).createQueryBuilder('use').where('use.uuid=:uuid', { uuid: uuid }).getOne()
+			const user = await getRepository(UserEntity).createQueryBuilder('use').where('use.uuid=:uuid', { uuid: uuid }).getOne()
 
 			expect(user.accessKey).toEqual(validationResult.refreshToken)
 		})
@@ -102,7 +102,7 @@ describe('AuthService', () => {
 
 	describe('validateAccessKey', () => {
 		it('returns false for bad access key', async () => {
-			let uuid = 'b6b3b90c-768d-498e-9ed4-e1fd9208ee97'
+			const uuid = 'b6b3b90c-768d-498e-9ed4-e1fd9208ee97'
 
 			await getRepository(UserEntity).insert({
 				uuid: uuid,
@@ -114,7 +114,7 @@ describe('AuthService', () => {
 				registrationDate: new Date()
 			})
 
-			let valid = await service.validateAccessKey('key2', uuid)
+			const valid = await service.validateAccessKey('key2', uuid)
 
 			expect(valid).toEqual(false)
 		})
@@ -130,13 +130,13 @@ describe('AuthService', () => {
 				registrationDate: new Date()
 			})
 
-			let valid = await service.validateAccessKey('key', '37673559-7d57-4eb5-a05a-c4cfea682021')
+			const valid = await service.validateAccessKey('key', '37673559-7d57-4eb5-a05a-c4cfea682021')
 
 			expect(valid).toEqual(false)
 		})
 
 		it('returns true with a valid access key', async () => {
-			let uuid = '3128a6b9-5f02-4141-813c-11827846bdf0'
+			const uuid = '3128a6b9-5f02-4141-813c-11827846bdf0'
 
 			await getRepository(UserEntity).insert({
 				uuid: uuid,
@@ -148,7 +148,7 @@ describe('AuthService', () => {
 				registrationDate: new Date()
 			})
 
-			let valid = await service.validateAccessKey('key', uuid)
+			const valid = await service.validateAccessKey('key', uuid)
 
 			expect(valid).toEqual(true)
 		})
@@ -156,7 +156,7 @@ describe('AuthService', () => {
 
 	describe('resetAccessKey', () => {
 		it('cleans the access key', async () => {
-			let uuid = 'de98759c-ebfc-4609-b3a1-c8af68b93754'
+			const uuid = 'de98759c-ebfc-4609-b3a1-c8af68b93754'
 
 			await getRepository(UserEntity).insert({
 				uuid: uuid,
@@ -170,7 +170,7 @@ describe('AuthService', () => {
 
 			await service.resetAccessKey(uuid)
 
-			let user = await getRepository(UserEntity).createQueryBuilder('use').where('use.uuid=:uuid', { uuid: uuid }).getOne()
+			const user = await getRepository(UserEntity).createQueryBuilder('use').where('use.uuid=:uuid', { uuid: uuid }).getOne()
 
 			expect(user.accessKey).toBeNull()
 		})
