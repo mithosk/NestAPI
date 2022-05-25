@@ -4,11 +4,9 @@ import { WebSocketGateway, OnGatewayInit } from '@nestjs/websockets'
 
 @WebSocketGateway({ namespace: 'product' })
 export class ProductGateway implements OnGatewayInit {
-  constructor(
-    private readonly socketBus: ProductBus
-  ) { }
+	constructor(private readonly socketBus: ProductBus) {}
 
-  afterInit(server: Server) {
-    this.socketBus.setServer(server)
-  }
+	afterInit(server: Server) {
+		this.socketBus.setServer(server)
+	}
 }
