@@ -8,24 +8,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { UserRepository } from 'src/data/repositories/user.repository'
 
 @Module({
-    controllers: [AuthController],
-    providers: [AuthService, AuthStrategy],
-    imports: [
-        ConfigModule.forRoot(),
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (cso: ConfigService) => {
-                return {
-                    secret: cso.get<string>('JWT_KEY'),
-                    signOptions: { expiresIn: 28800 }
-                }
-            }
-        }),
-        TypeOrmModule.forFeature([
-            UserRepository
-        ])
-    ]
+	controllers: [AuthController],
+	providers: [AuthService, AuthStrategy],
+	imports: [
+		ConfigModule.forRoot(),
+		JwtModule.registerAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (cso: ConfigService) => {
+				return {
+					secret: cso.get<string>('JWT_KEY'),
+					signOptions: { expiresIn: 28800 }
+				}
+			}
+		}),
+		TypeOrmModule.forFeature([UserRepository])
+	]
 })
-
-export class AuthModule { }
+export class AuthModule {}
