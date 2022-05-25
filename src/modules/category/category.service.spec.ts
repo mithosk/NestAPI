@@ -9,86 +9,77 @@ import { CategoryEntity } from '../../data/entities/category.entity'
 import { CategoryRepository } from '../../data/repositories/category.repository'
 
 describe('CategoryService', () => {
-  let service: CategoryService
+	let service: CategoryService
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [CategoryService],
-      imports: [
-        TypeOrmModule.forFeature([
-          CategoryRepository
-        ]),
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: 'sqlite/89f27b24-523b-49a2-ac0b-33bc96b13d97',
-          entities: [
-            CategoryEntity,
-            ProductEntity
-          ],
-          synchronize: true,
-          dropSchema: true
-        })
-      ]
-    }).compile()
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [CategoryService],
+			imports: [
+				TypeOrmModule.forFeature([CategoryRepository]),
+				TypeOrmModule.forRoot({
+					type: 'sqlite',
+					database: 'sqlite/89f27b24-523b-49a2-ac0b-33bc96b13d97',
+					entities: [CategoryEntity, ProductEntity],
+					synchronize: true,
+					dropSchema: true
+				})
+			]
+		}).compile()
 
-    service = module.get<CategoryService>(CategoryService)
-  })
+		service = module.get<CategoryService>(CategoryService)
+	})
 
-  afterEach(async () => {
-    await getConnection().close()
-  })
+	afterEach(async () => {
+		await getConnection().close()
+	})
 
-  describe('read', () => {
+	describe('read', () => {
+		it('does not find the category', async () => {
+			const readPromise = async (): Promise<CategoryModel> => service.read('216e9e72-3af2-4202-ba9f-6ef1f8cc7ab4')
 
-    it('does not find the category', async () => {
-      const readPromise = async (): Promise<CategoryModel> => service.read('216e9e72-3af2-4202-ba9f-6ef1f8cc7ab4')
+			await expect(readPromise()).rejects.toThrow(NotFoundException)
+		})
 
-      await expect(readPromise()).rejects.toThrow(NotFoundException)
-    })
+		it('retrieves the category', async () => {
+			let uuid = 'eda1da2b-494c-44bc-8e9c-6f40644a70c9'
 
-    it('retrieves the category', async () => {
-      let uuid = 'eda1da2b-494c-44bc-8e9c-6f40644a70c9'
+			await getRepository(CategoryEntity).insert({
+				uuid: uuid,
+				code: 'CATEGORY_CODE'
+			})
 
-      await getRepository(CategoryEntity).insert({
-        uuid: uuid,
-        code: 'CATEGORY_CODE'
-      })
+			let category = await service.read(uuid)
 
-      let category = await service.read(uuid)
+			expect(category.code).toEqual('CATEGORY_CODE')
+		})
+	})
 
-      expect(category.code).toEqual('CATEGORY_CODE')
-    })
+	describe('update', () => {
+		it('edit the category', async () => {
+			let uuid = '54e474e8-df25-4dbf-9b6f-fce4b5bd5bea'
 
-  })
+			await getRepository(CategoryEntity).insert({
+				uuid: uuid,
+				code: 'CATEGORY_CODE_1',
+				description: 'category description 1'
+			})
 
-  describe('update', () => {
+			let categoryModel = await service.update({
+				id: uuid,
+				code: 'CATEGORY_CODE_2',
+				description: 'category description 2'
+			})
 
-    it('edit the category', async () => {
-      let uuid = '54e474e8-df25-4dbf-9b6f-fce4b5bd5bea'
+			expect(categoryModel.code).toEqual('CATEGORY_CODE_2')
+			expect(categoryModel.description).toEqual('category description 2')
 
-      await getRepository(CategoryEntity).insert({
-        uuid: uuid,
-        code: 'CATEGORY_CODE_1',
-        description: 'category description 1'
-      })
+			let categoryEntity = await getRepository(CategoryEntity)
+				.createQueryBuilder('cat')
+				.where('cat.uuid=:uuid', { uuid: uuid })
+				.getOne()
 
-      let categoryModel = await service.update({
-        id: uuid,
-        code: 'CATEGORY_CODE_2',
-        description: 'category description 2'
-      })
-
-      expect(categoryModel.code).toEqual('CATEGORY_CODE_2')
-      expect(categoryModel.description).toEqual('category description 2')
-
-      let categoryEntity = await getRepository(CategoryEntity)
-        .createQueryBuilder('cat')
-        .where('cat.uuid=:uuid', { uuid: uuid })
-        .getOne()
-
-      expect(categoryEntity.code).toEqual('CATEGORY_CODE_2')
-      expect(categoryEntity.description).toEqual('category description 2')
-    })
-
-  })
+			expect(categoryEntity.code).toEqual('CATEGORY_CODE_2')
+			expect(categoryEntity.description).toEqual('category description 2')
+		})
+	})
 })
