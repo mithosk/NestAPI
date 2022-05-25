@@ -30,7 +30,7 @@ export class ProductController {
 		let pageSize = parseInt(headers['pagesize'])
 		pageSize = isNaN(pageSize) ? 30 : pageSize
 
-		let page = await this.service.list(query, sortType, pageIndex, pageSize)
+		const page = await this.service.list(query, sortType, pageIndex, pageSize)
 
 		response
 			.set('SortType', ProductSortType[sortType])
