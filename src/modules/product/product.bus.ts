@@ -9,7 +9,7 @@ export class ProductBus {
 		this.server = server
 	}
 
-	public notify(event: string, message: any): void {
+	public notify<T>(event: string, message: T): void {
 		this.server.emit(event, message)
 	}
 }
