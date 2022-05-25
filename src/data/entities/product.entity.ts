@@ -1,32 +1,27 @@
 import { CategoryEntity } from './category.entity'
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated } from 'typeorm'
 
-
 @Entity('products')
 export class ProductEntity {
+	@PrimaryGeneratedColumn()
+	id: number
 
-    @PrimaryGeneratedColumn()
-    id: number
+	@Generated('uuid')
+	@Column({ unique: true })
+	uuid: string
 
+	@Column({ unique: true })
+	code: string
 
-    @Generated('uuid')
-    @Column({ unique: true })
-    uuid: string
+	@Column()
+	description: string
 
-    @Column({ unique: true })
-    code: string
+	@Column({ type: 'float' })
+	price: number
 
-    @Column()
-    description: string
+	@Column()
+	insertDarte: Date
 
-    @Column({ type: 'float' })
-    price: number
-
-    @Column()
-    insertDarte: Date
-
-
-    @ManyToOne(() => CategoryEntity, cat => cat.products, { onDelete: 'CASCADE' })
-    category: CategoryEntity
-
+	@ManyToOne(() => CategoryEntity, cat => cat.products, { onDelete: 'CASCADE' })
+	category: CategoryEntity
 }
