@@ -11,231 +11,222 @@ import { ProductRepository } from '../../data/repositories/product.repository'
 import { CategoryRepository } from '../../data/repositories/category.repository'
 
 describe('ProductService', () => {
-  let service: ProductService
-  let bus: ProductBus
+	let service: ProductService
+	let bus: ProductBus
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductService, ProductBus],
-      imports: [
-        TypeOrmModule.forFeature([
-          CategoryRepository,
-          ProductRepository
-        ]),
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: 'sqlite/e5e26271-2f0d-485d-ba98-f4e8186d6594',
-          entities: [
-            CategoryEntity,
-            ProductEntity
-          ],
-          synchronize: true,
-          dropSchema: true
-        })
-      ]
-    }).compile()
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [ProductService, ProductBus],
+			imports: [
+				TypeOrmModule.forFeature([CategoryRepository, ProductRepository]),
+				TypeOrmModule.forRoot({
+					type: 'sqlite',
+					database: 'sqlite/e5e26271-2f0d-485d-ba98-f4e8186d6594',
+					entities: [CategoryEntity, ProductEntity],
+					synchronize: true,
+					dropSchema: true
+				})
+			]
+		}).compile()
 
-    service = module.get<ProductService>(ProductService)
-    bus = module.get<ProductBus>(ProductBus)
-  })
+		service = module.get<ProductService>(ProductService)
+		bus = module.get<ProductBus>(ProductBus)
+	})
 
-  afterEach(async () => {
-    await getConnection().close()
-  })
+	afterEach(async () => {
+		await getConnection().close()
+	})
 
-  describe('create', () => {
+	describe('create', () => {
+		it('creates a new product with a new category', async () => {
+			let busEvent: string
+			let busMessage: any
+			jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
+				busEvent = event
+				busMessage = message
+			})
 
-    it('creates a new product with a new category', async () => {
-      let busEvent: string
-      let busMessage: any
-      jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
-        busEvent = event
-        busMessage = message
-      })
+			let productModel = await service.create({
+				id: undefined,
+				code: 'PRODUCT_CODE',
+				description: 'product description',
+				categoryId: undefined,
+				categoryCode: 'CATEGORY_CODE',
+				price: 12.45
+			})
 
-      let productModel = await service.create({
-        id: undefined,
-        code: 'PRODUCT_CODE',
-        description: 'product description',
-        categoryId: undefined,
-        categoryCode: 'CATEGORY_CODE',
-        price: 12.45
-      })
+			let productEntity: ProductEntity = await getRepository(ProductEntity)
+				.createQueryBuilder('pro')
+				.where('pro.code=:code', { code: 'PRODUCT_CODE' })
+				.leftJoinAndSelect('pro.category', 'cat')
+				.getOne()
 
-      let productEntity: ProductEntity = await getRepository(ProductEntity)
-        .createQueryBuilder('pro')
-        .where('pro.code=:code', { code: 'PRODUCT_CODE' })
-        .leftJoinAndSelect('pro.category', 'cat')
-        .getOne()
+			expect(productModel.id).toBeDefined()
+			expect(productModel.code).toBe('PRODUCT_CODE')
+			expect(productModel.description).toBe('product description')
+			expect(productModel.categoryId).toBeDefined()
+			expect(productModel.categoryCode).toBe('CATEGORY_CODE')
+			expect(productModel.price).toBe(12.45)
 
-      expect(productModel.id).toBeDefined()
-      expect(productModel.code).toBe('PRODUCT_CODE')
-      expect(productModel.description).toBe('product description')
-      expect(productModel.categoryId).toBeDefined()
-      expect(productModel.categoryCode).toBe('CATEGORY_CODE')
-      expect(productModel.price).toBe(12.45)
+			expect(productEntity.code).toBe('PRODUCT_CODE')
+			expect(productEntity.description).toBe('product description')
+			expect(productEntity.category.code).toBe('CATEGORY_CODE')
+			expect(productEntity.price).toBe(12.45)
 
-      expect(productEntity.code).toBe('PRODUCT_CODE')
-      expect(productEntity.description).toBe('product description')
-      expect(productEntity.category.code).toBe('CATEGORY_CODE')
-      expect(productEntity.price).toBe(12.45)
+			expect(busEvent).toBe('ProductCreated')
+			expect(busMessage.id).toBeDefined()
+			expect(busMessage.code).toBe('PRODUCT_CODE')
+			expect(busMessage.description).toBe('product description')
+			expect(busMessage.categoryId).toBeDefined()
+			expect(busMessage.categoryCode).toBe('CATEGORY_CODE')
+			expect(busMessage.price).toBe(12.45)
+		})
 
-      expect(busEvent).toBe('ProductCreated')
-      expect(busMessage.id).toBeDefined()
-      expect(busMessage.code).toBe('PRODUCT_CODE')
-      expect(busMessage.description).toBe('product description')
-      expect(busMessage.categoryId).toBeDefined()
-      expect(busMessage.categoryCode).toBe('CATEGORY_CODE')
-      expect(busMessage.price).toBe(12.45)
-    })
+		it('creates a new product with an old category', async () => {
+			let busEvent: string
+			let busMessage: any
+			jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
+				busEvent = event
+				busMessage = message
+			})
 
-    it('creates a new product with an old category', async () => {
-      let busEvent: string
-      let busMessage: any
-      jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
-        busEvent = event
-        busMessage = message
-      })
+			await getRepository(CategoryEntity).insert({
+				code: 'CATEGORY_CODE'
+			})
 
-      await getRepository(CategoryEntity).insert({
-        code: 'CATEGORY_CODE'
-      })
+			let productModel = await service.create({
+				id: undefined,
+				code: 'PRODUCT_CODE',
+				description: 'product description',
+				categoryId: undefined,
+				categoryCode: 'CATEGORY_CODE',
+				price: 5
+			})
 
-      let productModel = await service.create({
-        id: undefined,
-        code: 'PRODUCT_CODE',
-        description: 'product description',
-        categoryId: undefined,
-        categoryCode: 'CATEGORY_CODE',
-        price: 5
-      })
+			let productEntity: ProductEntity = await getRepository(ProductEntity)
+				.createQueryBuilder('pro')
+				.where('pro.code=:code', { code: 'PRODUCT_CODE' })
+				.leftJoinAndSelect('pro.category', 'cat')
+				.getOne()
 
-      let productEntity: ProductEntity = await getRepository(ProductEntity)
-        .createQueryBuilder('pro')
-        .where('pro.code=:code', { code: 'PRODUCT_CODE' })
-        .leftJoinAndSelect('pro.category', 'cat')
-        .getOne()
+			expect(productModel.id).toBeDefined()
+			expect(productModel.code).toBe('PRODUCT_CODE')
+			expect(productModel.description).toBe('product description')
+			expect(productModel.categoryId).toBeDefined()
+			expect(productModel.categoryCode).toBe('CATEGORY_CODE')
+			expect(productModel.price).toBe(5)
 
-      expect(productModel.id).toBeDefined()
-      expect(productModel.code).toBe('PRODUCT_CODE')
-      expect(productModel.description).toBe('product description')
-      expect(productModel.categoryId).toBeDefined()
-      expect(productModel.categoryCode).toBe('CATEGORY_CODE')
-      expect(productModel.price).toBe(5)
+			expect(productEntity.code).toBe('PRODUCT_CODE')
+			expect(productEntity.description).toBe('product description')
+			expect(productEntity.category.code).toBe('CATEGORY_CODE')
+			expect(productEntity.price).toBe(5)
 
-      expect(productEntity.code).toBe('PRODUCT_CODE')
-      expect(productEntity.description).toBe('product description')
-      expect(productEntity.category.code).toBe('CATEGORY_CODE')
-      expect(productEntity.price).toBe(5)
+			expect(busEvent).toBe('ProductCreated')
+			expect(busMessage.id).toBeDefined()
+			expect(busMessage.code).toBe('PRODUCT_CODE')
+			expect(busMessage.description).toBe('product description')
+			expect(busMessage.categoryId).toBeDefined()
+			expect(busMessage.categoryCode).toBe('CATEGORY_CODE')
+			expect(busMessage.price).toBe(5)
+		})
 
-      expect(busEvent).toBe('ProductCreated')
-      expect(busMessage.id).toBeDefined()
-      expect(busMessage.code).toBe('PRODUCT_CODE')
-      expect(busMessage.description).toBe('product description')
-      expect(busMessage.categoryId).toBeDefined()
-      expect(busMessage.categoryCode).toBe('CATEGORY_CODE')
-      expect(busMessage.price).toBe(5)
-    })
+		it('generates an error to block duplication of the product code', async () => {
+			await getRepository(ProductEntity).insert({
+				code: 'PRODUCT_CODE',
+				description: 'description',
+				price: 3.2,
+				insertDarte: new Date()
+			})
 
-    it('generates an error to block duplication of the product code', async () => {
-      await getRepository(ProductEntity).insert({
-        code: 'PRODUCT_CODE',
-        description: 'description',
-        price: 3.2,
-        insertDarte: new Date()
-      })
+			const createPromise = async (): Promise<ProductModel> =>
+				await service.create({
+					id: undefined,
+					code: 'PRODUCT_CODE',
+					description: 'product description',
+					categoryId: undefined,
+					categoryCode: 'CATEGORY_CODE',
+					price: 5.4
+				})
 
-      const createPromise = async (): Promise<ProductModel> => await service.create({
-        id: undefined,
-        code: 'PRODUCT_CODE',
-        description: 'product description',
-        categoryId: undefined,
-        categoryCode: 'CATEGORY_CODE',
-        price: 5.4
-      })
+			await expect(createPromise()).rejects.toThrow(ForbiddenException)
+		})
+	})
 
-      await expect(createPromise()).rejects.toThrow(ForbiddenException)
-    })
+	describe('list', () => {
+		it('returns the second page', async () => {
+			let categoryEntity: CategoryEntity = new CategoryEntity()
+			categoryEntity.code = 'CATEGORY_CODE'
+			await getRepository(CategoryEntity).insert(categoryEntity)
 
-  })
+			for (let i = 0; i < 11; i++)
+				await getRepository(ProductEntity).insert({
+					code: 'PRODUCT_CODE_' + i,
+					description: 'description',
+					price: 15.1,
+					insertDarte: new Date(),
+					category: categoryEntity
+				})
 
-  describe('list', () => {
+			let productPage = await service.list({ text: undefined }, ProductSortType.CodeAsc, 2, 10)
 
-    it('returns the second page', async () => {
-      let categoryEntity: CategoryEntity = new CategoryEntity()
-      categoryEntity.code = 'CATEGORY_CODE'
-      await getRepository(CategoryEntity).insert(categoryEntity)
+			expect(productPage.products.length).toBe(1)
+			expect(productPage.pageCount).toBe(2)
+		})
 
-      for (let i = 0; i < 11; i++)
-        await getRepository(ProductEntity).insert({
-          code: 'PRODUCT_CODE_' + i,
-          description: 'description',
-          price: 15.1,
-          insertDarte: new Date(),
-          category: categoryEntity
-        })
+		it('filters products by text', async () => {
+			let categoryEntity: CategoryEntity = new CategoryEntity()
+			categoryEntity.code = 'CATEGORY_CODE'
+			await getRepository(CategoryEntity).insert(categoryEntity)
 
-      let productPage = await service.list({ text: undefined }, ProductSortType.CodeAsc, 2, 10)
+			for (let i = 0; i < 10; i++)
+				await getRepository(ProductEntity).insert({
+					code: '1_PRODUCT_CODE_' + i,
+					description: 'description',
+					price: 4,
+					insertDarte: new Date(),
+					category: categoryEntity
+				})
 
-      expect(productPage.products.length).toBe(1)
-      expect(productPage.pageCount).toBe(2)
-    })
+			for (let i = 0; i < 10; i++)
+				await getRepository(ProductEntity).insert({
+					code: '2_PRODUCT_CODE_XXX_' + i,
+					description: 'description',
+					price: 4,
+					insertDarte: new Date(),
+					category: categoryEntity
+				})
 
-    it('filters products by text', async () => {
-      let categoryEntity: CategoryEntity = new CategoryEntity()
-      categoryEntity.code = 'CATEGORY_CODE'
-      await getRepository(CategoryEntity).insert(categoryEntity)
+			for (let i = 0; i < 10; i++)
+				await getRepository(ProductEntity).insert({
+					code: '3_PRODUCT_CODE_' + i,
+					description: 'description xxx',
+					price: 4,
+					insertDarte: new Date(),
+					category: categoryEntity
+				})
 
-      for (let i = 0; i < 10; i++)
-        await getRepository(ProductEntity).insert({
-          code: '1_PRODUCT_CODE_' + i,
-          description: 'description',
-          price: 4,
-          insertDarte: new Date(),
-          category: categoryEntity
-        })
+			let page = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
 
-      for (let i = 0; i < 10; i++)
-        await getRepository(ProductEntity).insert({
-          code: '2_PRODUCT_CODE_XXX_' + i,
-          description: 'description',
-          price: 4,
-          insertDarte: new Date(),
-          category: categoryEntity
-        })
+			expect(page.productCount).toBe(20)
+		})
 
-      for (let i = 0; i < 10; i++)
-        await getRepository(ProductEntity).insert({
-          code: '3_PRODUCT_CODE_' + i,
-          description: 'description xxx',
-          price: 4,
-          insertDarte: new Date(),
-          category: categoryEntity
-        })
+		it('sort products by price', async () => {
+			let categoryEntity: CategoryEntity = new CategoryEntity()
+			categoryEntity.code = 'CATEGORY_CODE'
+			await getRepository(CategoryEntity).insert(categoryEntity)
 
-      let page = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
+			for (let i = 0; i < 100; i++)
+				await getRepository(ProductEntity).insert({
+					code: 'PRODUCT_CODE_' + i,
+					description: 'description',
+					price: i,
+					insertDarte: new Date(),
+					category: categoryEntity
+				})
 
-      expect(page.productCount).toBe(20)
-    })
+			let page = await service.list({ text: undefined }, ProductSortType.PriceDesc, 1, 1)
 
-    it('sort products by price', async () => {
-      let categoryEntity: CategoryEntity = new CategoryEntity()
-      categoryEntity.code = 'CATEGORY_CODE'
-      await getRepository(CategoryEntity).insert(categoryEntity)
-
-      for (let i = 0; i < 100; i++)
-        await getRepository(ProductEntity).insert({
-          code: 'PRODUCT_CODE_' + i,
-          description: 'description',
-          price: i,
-          insertDarte: new Date(),
-          category: categoryEntity
-        })
-
-      let page = await service.list({ text: undefined }, ProductSortType.PriceDesc, 1, 1)
-
-      expect(page.products[0].price).toBe(99)
-    })
-
-  })
+			expect(page.products[0].price).toBe(99)
+		})
+	})
 })
