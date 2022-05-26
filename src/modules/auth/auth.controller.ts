@@ -34,7 +34,7 @@ export class AuthController {
 			throw new ForbiddenException('a token could not be generated')
 
 		return {
-			token: this.jwtService.sign({ userId: body.userId })
+			token: this.jwtService.sign(<HttpUser>{ id: body.userId })
 		}
 	}
 
@@ -42,8 +42,7 @@ export class AuthController {
 	@Post('logout')
 	@UseGuards(AuthGuard('jwt'))
 	public async logout(@Body() body: LogoutRequest, @Request() request: HttpRequest): Promise<LogoutResponse> {
-		const user = request.user as HttpUser
-		if (body.userId !== user.id) throw new ForbiddenException('another user cannot be logged out')
+		if (body.userId !== request.user.id) throw new ForbiddenException('another user cannot be logged out')
 
 		await this.service.resetAccessKey(body.userId)
 
