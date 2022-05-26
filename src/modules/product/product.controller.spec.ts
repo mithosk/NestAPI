@@ -1,11 +1,11 @@
 import { getConnection } from 'typeorm'
 import { ProductBus } from './product.bus'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Response as HttpResponse } from 'express'
 import { ProductModel } from './product.interface'
 import { ProductService } from './product.service'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ProductController } from './product.controller'
+import { HttpResponse } from '../../common/http-response.common'
 import { ProductEntity } from '../../data/entities/product.entity'
 import { CategoryEntity } from '../../data/entities/category.entity'
 import { ProductRepository } from '../../data/repositories/product.repository'
@@ -96,12 +96,13 @@ describe('ProductController', () => {
 
 			//response mock
 			let responseBody: ProductModel[]
-			const httpResponse = <HttpResponse<any, Record<string, any>>>{
-				set(key: string, value: string) {
+			const httpResponse = <HttpResponse>{
+				set() {
 					return this
 				},
 				json(body: ProductModel[]) {
 					responseBody = body
+					return this
 				}
 			}
 
@@ -126,12 +127,14 @@ describe('ProductController', () => {
 
 			//response mock
 			const responseHeader: { [id: string]: string } = {}
-			const httpResponse = <HttpResponse<any, Record<string, any>>>{
+			const httpResponse = <HttpResponse>{
 				set(key: string, value: string) {
 					responseHeader[key] = value
 					return this
 				},
-				json(body: ProductModel[]) {}
+				json() {
+					return this
+				}
 			}
 
 			//execution of the function to be tested
