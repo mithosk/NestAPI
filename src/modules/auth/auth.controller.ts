@@ -4,14 +4,18 @@ import { AuthGuard } from '@nestjs/passport'
 import { HttpUser } from '../../common/http-user.common'
 import { HttpRequest } from '../..//common/http-request.common'
 import { Body, Controller, ForbiddenException, Post, UseGuards, Request, HttpCode } from '@nestjs/common'
-import { LoginRequest, LoginResponse, RefreshRequest, RefreshResponse, LogoutRequest, LogoutResponse } from './auth.interface'
+import {
+	LoginRequest,
+	LoginResponse,
+	RefreshRequest,
+	RefreshResponse,
+	LogoutRequest,
+	LogoutResponse
+} from './auth.interface'
 
 @Controller('rpc/auth')
 export class AuthController {
-	constructor(
-		private readonly service: AuthService,
-		private readonly jwtService: JwtService
-	) { }
+	constructor(private readonly service: AuthService, private readonly jwtService: JwtService) {}
 
 	@Post('login')
 	@HttpCode(200)
