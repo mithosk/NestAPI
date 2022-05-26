@@ -1,28 +1,24 @@
 import { JwtService } from '@nestjs/jwt'
 import { AuthService } from './auth.service'
 import { AuthGuard } from '@nestjs/passport'
-import { Request as HttpRequest } from 'express'
-import { HttpUser } from 'src/common/http-user.common'
+import { HttpUser } from '../../common/http-user.common'
+import { HttpRequest } from '../..//common/http-request.common'
 import { Body, Controller, ForbiddenException, Post, UseGuards, Request, HttpCode } from '@nestjs/common'
-import {
-	LoginRequest,
-	LoginResponse,
-	RefreshRequest,
-	RefreshResponse,
-	LogoutRequest,
-	LogoutResponse
-} from './auth.interface'
+import { LoginRequest, LoginResponse, RefreshRequest, RefreshResponse, LogoutRequest, LogoutResponse } from './auth.interface'
 
 @Controller('rpc/auth')
 export class AuthController {
-	constructor(private readonly service: AuthService, private readonly jwtService: JwtService) {}
+	constructor(
+		private readonly service: AuthService,
+		private readonly jwtService: JwtService
+	) { }
 
 	@Post('login')
 	@HttpCode(200)
 	public async login(@Body() body: LoginRequest): Promise<LoginResponse> {
 		const response = await this.service.validateCredentials(body)
 
-		response.token = this.jwtService.sign(<HttpUser>{ id: response.userId })
+		response.token = this.jwtService.sign({ id: response.userId })
 
 		return response
 	}
