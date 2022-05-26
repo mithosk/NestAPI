@@ -40,8 +40,8 @@ describe('ProductService', () => {
 	describe('create', () => {
 		it('creates a new product with a new category', async () => {
 			let busEvent: string
-			let busMessage: any
-			jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
+			let busMessage: ProductModel
+			jest.spyOn(bus, 'notify').mockImplementation((event, message: ProductModel) => {
 				busEvent = event
 				busMessage = message
 			})
@@ -84,8 +84,8 @@ describe('ProductService', () => {
 
 		it('creates a new product with an old category', async () => {
 			let busEvent: string
-			let busMessage: any
-			jest.spyOn(bus, 'notify').mockImplementation((event, message) => {
+			let busMessage: ProductModel
+			jest.spyOn(bus, 'notify').mockImplementation((event, message: ProductModel) => {
 				busEvent = event
 				busMessage = message
 			})
