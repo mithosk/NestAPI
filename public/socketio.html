@@ -1,0 +1,20 @@
+<html>
+
+<head>
+    <title>Socket.IO</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('/product');
+
+        socket.on('ProductCreated', (msg) => {
+            document.getElementById('products').insertAdjacentHTML("beforeend", "<div style='font-size:18;'>" + msg.code + " [" + msg.categoryCode + "]</div>");
+            console.log('message: ' + JSON.stringify(msg));
+        });
+    </script>
+</head>
+
+<body>
+    <div id="products" />
+</body>
+
+</html>
