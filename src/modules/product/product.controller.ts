@@ -2,11 +2,11 @@ import { AuthGuard } from '@nestjs/passport'
 import { ProductService } from './product.service'
 import { HttpResponse } from '../../common/http-response.common'
 import { ProductModel, ProductQuery, ProductSortType } from './product.interface'
-import { Body, Controller, Get, Post, Query, Response, Headers, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, Response, Headers, UseGuards } from '@nestjs/common'
 
 @Controller('products')
 export class ProductController {
-	constructor(private readonly service: ProductService) {}
+	constructor(private readonly service: ProductService) { }
 
 	@Post()
 	@UseGuards(AuthGuard('jwt'))
@@ -15,7 +15,6 @@ export class ProductController {
 	}
 
 	@Get()
-	@UsePipes(new ValidationPipe({ transform: true }))
 	public async list(
 		@Query() query: ProductQuery,
 		@Headers() headers: { [header: string]: string },
