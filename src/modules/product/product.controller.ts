@@ -6,7 +6,7 @@ import { Body, Controller, Get, Post, Query, Response, Headers, UseGuards } from
 
 @Controller('products')
 export class ProductController {
-	constructor(private readonly service: ProductService) { }
+	constructor(private readonly service: ProductService) {}
 
 	@Post()
 	@UseGuards(AuthGuard('jwt'))
