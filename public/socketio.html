@@ -8,7 +8,6 @@
 
         socket.on('ProductCreated', (msg) => {
             document.getElementById('products').insertAdjacentHTML("beforeend", "<div style='font-size:18;'>" + msg.code + " [" + msg.categoryCode + "]</div>");
-            console.log('message: ' + JSON.stringify(msg));
         });
     </script>
 </head>
