@@ -22,7 +22,7 @@ export class AuthController {
 	public async login(@Body() body: LoginRequest): Promise<LoginResponse> {
 		const response = await this.service.validateCredentials(body)
 
-		response.token = this.jwtService.sign({ id: response.userId })
+		response.token = this.jwtService.sign(<HttpUser>{ id: response.userId })
 
 		return response
 	}
