@@ -17,11 +17,12 @@ export class ProductService {
 		private readonly productRepository: ProductRepository,
 		private readonly dataConnection: Connection,
 		private readonly productBus: ProductBus
-	) {}
+	) { }
 
 	public async create(product: ProductModel): Promise<ProductModel> {
-		let productEntity = await this.productRepository.findByCode(product.code)
-		if (productEntity !== undefined) throw new ForbiddenException('product code already used')
+		const sameCodeProduct = await this.productRepository.findByCode(product.code)
+		if (sameCodeProduct !== undefined)
+			throw new ForbiddenException('product code already used')
 
 		let categoryEntity = await this.categoryRepository.findByCode(product.categoryCode)
 		if (categoryEntity === undefined) {
@@ -29,7 +30,7 @@ export class ProductService {
 			categoryEntity.code = product.categoryCode
 		}
 
-		productEntity = new ProductEntity()
+		const productEntity = new ProductEntity()
 		productEntity.code = product.code
 		productEntity.description = product.description
 		productEntity.price = product.price
@@ -41,11 +42,11 @@ export class ProductService {
 			await em.save(productEntity)
 		})
 
-		const savedProduct = this.map(productEntity)
+		const mappedProduct = this.map(productEntity)
 
-		this.productBus.notify('ProductCreated', savedProduct)
+		this.productBus.notify('ProductCreated', mappedProduct)
 
-		return savedProduct
+		return mappedProduct
 	}
 
 	public async list(query: ProductQuery, sort: ProductSortType, pageIndex: number, pageSize: number): Promise<ProductPage> {
@@ -59,6 +60,7 @@ export class ProductService {
 			(pageIndex - 1) * pageSize,
 			pageSize
 		)
+
 		const productCount = await this.productRepository.countByFilter(filter)
 
 		return {
