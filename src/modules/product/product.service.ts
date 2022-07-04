@@ -34,7 +34,7 @@ export class ProductService {
 		productEntity.code = product.code
 		productEntity.description = product.description
 		productEntity.price = product.price
-		productEntity.insertDarte = new Date()
+		productEntity.insertDate = new Date()
 		productEntity.category = categoryEntity
 
 		await this.dataConnection.transaction(async em => {
