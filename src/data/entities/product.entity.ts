@@ -20,7 +20,7 @@ export class ProductEntity {
 	price: number
 
 	@Column()
-	insertDarte: Date
+	insertDate: Date
 
 	@ManyToOne(() => CategoryEntity, cat => cat.products, { onDelete: 'CASCADE' })
 	category: CategoryEntity
