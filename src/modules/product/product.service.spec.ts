@@ -57,7 +57,7 @@ describe('ProductService', () => {
 
 			const productEntity: ProductEntity = await getRepository(ProductEntity)
 				.createQueryBuilder('pro')
-				.where('pro.code=:code', { code: 'PRODUCT_CODE' })
+				.where('pro.code=:code', { code: productModel.code })
 				.leftJoinAndSelect('pro.category', 'cat')
 				.getOne()
 
@@ -68,18 +68,18 @@ describe('ProductService', () => {
 			expect(productModel.categoryCode).toBe('CATEGORY_CODE')
 			expect(productModel.price).toBe(12.45)
 
-			expect(productEntity.code).toBe('PRODUCT_CODE')
-			expect(productEntity.description).toBe('product description')
-			expect(productEntity.category.code).toBe('CATEGORY_CODE')
-			expect(productEntity.price).toBe(12.45)
+			expect(productEntity.code).toBe(productModel.code)
+			expect(productEntity.description).toBe(productModel.description)
+			expect(productEntity.price).toBe(productModel.price)
+			expect(productEntity.category.code).toBe(productModel.categoryCode)
 
 			expect(busEvent).toBe('ProductCreated')
 			expect(busMessage.id).toBeDefined()
-			expect(busMessage.code).toBe('PRODUCT_CODE')
-			expect(busMessage.description).toBe('product description')
+			expect(busMessage.code).toBe(productModel.code)
+			expect(busMessage.description).toBe(productModel.description)
 			expect(busMessage.categoryId).toBeDefined()
-			expect(busMessage.categoryCode).toBe('CATEGORY_CODE')
-			expect(busMessage.price).toBe(12.45)
+			expect(busMessage.categoryCode).toBe(productModel.categoryCode)
+			expect(busMessage.price).toBe(productModel.price)
 		})
 
 		it('creates a new product with an old category', async () => {
@@ -105,7 +105,7 @@ describe('ProductService', () => {
 
 			const productEntity: ProductEntity = await getRepository(ProductEntity)
 				.createQueryBuilder('pro')
-				.where('pro.code=:code', { code: 'PRODUCT_CODE' })
+				.where('pro.code=:code', { code: productModel.code })
 				.leftJoinAndSelect('pro.category', 'cat')
 				.getOne()
 
@@ -116,18 +116,18 @@ describe('ProductService', () => {
 			expect(productModel.categoryCode).toBe('CATEGORY_CODE')
 			expect(productModel.price).toBe(5)
 
-			expect(productEntity.code).toBe('PRODUCT_CODE')
-			expect(productEntity.description).toBe('product description')
-			expect(productEntity.category.code).toBe('CATEGORY_CODE')
-			expect(productEntity.price).toBe(5)
+			expect(productEntity.code).toBe(productModel.code)
+			expect(productEntity.description).toBe(productModel.description)
+			expect(productEntity.price).toBe(productModel.price)
+			expect(productEntity.category.code).toBe(productModel.categoryCode)
 
 			expect(busEvent).toBe('ProductCreated')
 			expect(busMessage.id).toBeDefined()
-			expect(busMessage.code).toBe('PRODUCT_CODE')
-			expect(busMessage.description).toBe('product description')
+			expect(busMessage.code).toBe(productModel.code)
+			expect(busMessage.description).toBe(productModel.description)
 			expect(busMessage.categoryId).toBeDefined()
-			expect(busMessage.categoryCode).toBe('CATEGORY_CODE')
-			expect(busMessage.price).toBe(5)
+			expect(busMessage.categoryCode).toBe(productModel.categoryCode)
+			expect(busMessage.price).toBe(productModel.price)
 		})
 
 		it('generates an error to block duplication of the product code', async () => {
@@ -205,9 +205,9 @@ describe('ProductService', () => {
 					category: categoryEntity
 				})
 
-			const page = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
+			const productPage = await service.list({ text: 'XxX' }, ProductSortType.PriceDesc, 1, 30)
 
-			expect(page.productCount).toBe(20)
+			expect(productPage.productCount).toBe(20)
 		})
 
 		it('sort products by price', async () => {
@@ -224,9 +224,9 @@ describe('ProductService', () => {
 					category: categoryEntity
 				})
 
-			const page = await service.list({ text: undefined }, ProductSortType.PriceDesc, 1, 1)
+			const productPage = await service.list({ text: undefined }, ProductSortType.PriceDesc, 1, 1)
 
-			expect(page.products[0].price).toBe(99)
+			expect(productPage.products[0].price).toBe(99)
 		})
 	})
 })
