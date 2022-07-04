@@ -135,7 +135,7 @@ describe('ProductService', () => {
 				code: 'PRODUCT_CODE',
 				description: 'description',
 				price: 3.2,
-				insertDarte: new Date()
+				insertDate: new Date()
 			})
 
 			const createPromise = async (): Promise<ProductModel> =>
@@ -163,7 +163,7 @@ describe('ProductService', () => {
 					code: 'PRODUCT_CODE_' + i,
 					description: 'description',
 					price: 15.1,
-					insertDarte: new Date(),
+					insertDate: new Date(),
 					category: categoryEntity
 				})
 
@@ -183,7 +183,7 @@ describe('ProductService', () => {
 					code: '1_PRODUCT_CODE_' + i,
 					description: 'description',
 					price: 4,
-					insertDarte: new Date(),
+					insertDate: new Date(),
 					category: categoryEntity
 				})
 
@@ -192,7 +192,7 @@ describe('ProductService', () => {
 					code: '2_PRODUCT_CODE_XXX_' + i,
 					description: 'description',
 					price: 4,
-					insertDarte: new Date(),
+					insertDate: new Date(),
 					category: categoryEntity
 				})
 
@@ -201,7 +201,7 @@ describe('ProductService', () => {
 					code: '3_PRODUCT_CODE_' + i,
 					description: 'description xxx',
 					price: 4,
-					insertDarte: new Date(),
+					insertDate: new Date(),
 					category: categoryEntity
 				})
 
@@ -220,7 +220,7 @@ describe('ProductService', () => {
 					code: 'PRODUCT_CODE_' + i,
 					description: 'description',
 					price: i,
-					insertDarte: new Date(),
+					insertDate: new Date(),
 					category: categoryEntity
 				})
 
