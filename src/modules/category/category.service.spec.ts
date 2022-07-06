@@ -35,7 +35,8 @@ describe('CategoryService', () => {
 
 	describe('read', () => {
 		it('does not find the category', async () => {
-			const readPromise = async (): Promise<CategoryModel> => service.read('216e9e72-3af2-4202-ba9f-6ef1f8cc7ab4')
+			const readPromise = async (): Promise<CategoryModel> =>
+				service.read('216e9e72-3af2-4202-ba9f-6ef1f8cc7ab4')
 
 			await expect(readPromise()).rejects.toThrow(NotFoundException)
 		})
