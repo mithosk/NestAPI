@@ -6,13 +6,17 @@ import { UserRepository } from '../../data/repositories/user.repository'
 
 @Injectable()
 export class AuthService {
-	constructor(private readonly userRepository: UserRepository) {}
+	constructor(
+		private readonly userRepository: UserRepository
+	) { }
 
 	public async validateCredentials(credentials: LoginRequest): Promise<LoginResponse> {
 		const user = await this.userRepository.findByEmail(credentials.email)
-		if (user === undefined) throw new ForbiddenException('user not found')
+		if (user === undefined)
+			throw new ForbiddenException('user not found')
 
-		if (user.passwordHash !== sha512.hex(credentials.password)) throw new ForbiddenException('wrong password')
+		if (user.passwordHash !== sha512.hex(credentials.password))
+			throw new ForbiddenException('wrong password')
 
 		if (user.accessKey === null) {
 			user.accessKey = uuidv4()
@@ -34,7 +38,8 @@ export class AuthService {
 
 	public async resetAccessKey(userId: string): Promise<void> {
 		const user = await this.userRepository.findByUuid(userId)
-		if (user === undefined) throw new ForbiddenException('user not found')
+		if (user === undefined)
+			throw new ForbiddenException('user not found')
 
 		user.accessKey = null
 		await this.userRepository.save(user)
