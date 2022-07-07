@@ -94,7 +94,10 @@ describe('AuthService', () => {
 			expect(validationResult.refreshToken.length).toBeGreaterThan(0)
 			expect(validationResult.userId).toEqual(uuid)
 
-			const user = await getRepository(UserEntity).createQueryBuilder('use').where('use.uuid=:uuid', { uuid: uuid }).getOne()
+			const user = await getRepository(UserEntity)
+				.createQueryBuilder('use')
+				.where('use.uuid=:uuid', { uuid: uuid })
+				.getOne()
 
 			expect(user.accessKey).toEqual(validationResult.refreshToken)
 		})
@@ -170,7 +173,10 @@ describe('AuthService', () => {
 
 			await service.resetAccessKey(uuid)
 
-			const user = await getRepository(UserEntity).createQueryBuilder('use').where('use.uuid=:uuid', { uuid: uuid }).getOne()
+			const user = await getRepository(UserEntity)
+				.createQueryBuilder('use')
+				.where('use.uuid=:uuid', { uuid: uuid })
+				.getOne()
 
 			expect(user.accessKey).toBeNull()
 		})
