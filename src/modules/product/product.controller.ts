@@ -1,6 +1,6 @@
 import { AuthGuard } from '@nestjs/passport'
 import { ProductService } from './product.service'
-import { HttpResponse } from '../../common/http-response.common'
+import { HttpResponse } from '../../definitions/http-response.definition'
 import { ProductModel, ProductQuery, ProductSortType } from './product.interface'
 import { Body, Controller, Get, Post, Query, Response, Headers, UseGuards } from '@nestjs/common'
 
