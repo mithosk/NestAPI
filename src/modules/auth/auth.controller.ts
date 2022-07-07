@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt'
 import { AuthService } from './auth.service'
 import { AuthGuard } from '@nestjs/passport'
-import { HttpUser } from '../../common/http-user.common'
-import { HttpRequest } from '../../common/http-request.common'
+import { HttpUser } from '../../definitions/http-user.definition'
+import { HttpRequest } from '../../definitions/http-request.definition'
 import { Body, Controller, ForbiddenException, Post, UseGuards, Request, HttpCode } from '@nestjs/common'
 import { LoginRequest, LoginResponse, RefreshRequest, RefreshResponse, LogoutRequest, LogoutResponse } from './auth.interface'
 
