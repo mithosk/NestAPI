@@ -4,25 +4,21 @@ import { AuthGuard } from '@nestjs/passport'
 import { HttpUser } from '../../common/http-user.common'
 import { HttpRequest } from '../../common/http-request.common'
 import { Body, Controller, ForbiddenException, Post, UseGuards, Request, HttpCode } from '@nestjs/common'
-import {
-	LoginRequest,
-	LoginResponse,
-	RefreshRequest,
-	RefreshResponse,
-	LogoutRequest,
-	LogoutResponse
-} from './auth.interface'
+import { LoginRequest, LoginResponse, RefreshRequest, RefreshResponse, LogoutRequest, LogoutResponse } from './auth.interface'
 
 @Controller('rpc/auth')
 export class AuthController {
-	constructor(private readonly service: AuthService, private readonly jwtService: JwtService) {}
+	constructor(
+		private readonly service: AuthService,
+		private readonly jwtUtility: JwtService
+	) { }
 
 	@Post('login')
 	@HttpCode(200)
 	public async login(@Body() body: LoginRequest): Promise<LoginResponse> {
 		const response = await this.service.validateCredentials(body)
 
-		response.token = this.jwtService.sign(<HttpUser>{ id: response.userId })
+		response.token = this.jwtUtility.sign(<HttpUser>{ id: response.userId })
 
 		return response
 	}
@@ -34,7 +30,7 @@ export class AuthController {
 			throw new ForbiddenException('a token could not be generated')
 
 		return {
-			token: this.jwtService.sign(<HttpUser>{ id: body.userId })
+			token: this.jwtUtility.sign(<HttpUser>{ id: body.userId })
 		}
 	}
 
@@ -42,7 +38,8 @@ export class AuthController {
 	@Post('logout')
 	@UseGuards(AuthGuard('jwt'))
 	public async logout(@Body() body: LogoutRequest, @Request() request: HttpRequest): Promise<LogoutResponse> {
-		if (body.userId !== request.user.id) throw new ForbiddenException('another user cannot be logged out')
+		if (body.userId !== request.user.id)
+			throw new ForbiddenException('another user cannot be logged out')
 
 		await this.service.resetAccessKey(body.userId)
 
