@@ -5,7 +5,7 @@ import { AuthStrategy } from './auth.strategy'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AuthController } from './auth.controller'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { UserRepository } from 'src/data/repositories/user.repository'
+import { UserRepository } from '../../data/repositories/user.repository'
 
 @Module({
 	controllers: [AuthController],
