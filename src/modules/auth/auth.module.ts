@@ -11,6 +11,7 @@ import { UserRepository } from 'src/data/repositories/user.repository'
 	controllers: [AuthController],
 	providers: [AuthService, AuthStrategy],
 	imports: [
+		TypeOrmModule.forFeature([UserRepository]),
 		ConfigModule.forRoot(),
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
@@ -18,11 +19,10 @@ import { UserRepository } from 'src/data/repositories/user.repository'
 			useFactory: (cso: ConfigService) => {
 				return {
 					secret: cso.get<string>('JWT_KEY'),
-					signOptions: { expiresIn: 28800 }
+					signOptions: { expiresIn: '8h' }
 				}
 			}
-		}),
-		TypeOrmModule.forFeature([UserRepository])
+		})
 	]
 })
-export class AuthModule {}
+export class AuthModule { }
