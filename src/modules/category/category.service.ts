@@ -18,10 +18,10 @@ export class CategoryService {
 	}
 
 	public async update(category: CategoryModel): Promise<CategoryModel> {
-		let entityByUuid = await this.categoryRepository.findByUuid(category.id)
+		const entityByUuid = await this.categoryRepository.findByUuid(category.id)
 		if (entityByUuid === undefined) throw new NotFoundException('category not found')
 
-		let entityByCode = await this.categoryRepository.findByCode(category.code)
+		const entityByCode = await this.categoryRepository.findByCode(category.code)
 		if (entityByCode !== undefined && entityByCode.uuid !== entityByUuid.uuid)
 			throw new ForbiddenException('category code already used')
 
