@@ -12,4 +12,4 @@ import { CategoryRepository } from '../../data/repositories/category.repository'
 	providers: [ProductService, ProductGateway, ProductBus],
 	imports: [TypeOrmModule.forFeature([CategoryRepository, ProductRepository])]
 })
-export class ProductModule { }
+export class ProductModule {}

@@ -7,14 +7,11 @@ import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm'
 @EntityRepository(ProductEntity)
 export class ProductRepository extends Repository<ProductEntity> {
 	public async findByCode(code: string): Promise<ProductEntity> {
-		return await this.createQueryBuilder('pro')
-			.where('pro.code=:code', { code: code })
-			.getOne()
+		return await this.createQueryBuilder('pro').where('pro.code=:code', { code: code }).getOne()
 	}
 
 	public async findByFilter(filter: ProductFilter, sort: ProductSort, skip: number, take: number): Promise<ProductEntity[]> {
-		let query = this.createQueryBuilder('pro')
-			.leftJoinAndSelect('pro.category', 'cat')
+		let query = this.createQueryBuilder('pro').leftJoinAndSelect('pro.category', 'cat')
 
 		query = this.applyFilter(query, filter)
 
@@ -40,11 +37,9 @@ export class ProductRepository extends Repository<ProductEntity> {
 					throw new InternalServerErrorException('unmanaged sorting')
 			}
 
-		if (skip !== undefined)
-			query = query.skip(skip)
+		if (skip !== undefined) query = query.skip(skip)
 
-		if (take !== undefined)
-			query = query.take(take)
+		if (take !== undefined) query = query.take(take)
 
 		return await query.getMany()
 	}

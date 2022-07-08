@@ -9,4 +9,4 @@ import { CategoryRepository } from '../..//data/repositories/category.repository
 	providers: [CategoryService],
 	imports: [TypeOrmModule.forFeature([CategoryRepository])]
 })
-export class CategoryModule { }
+export class CategoryModule {}

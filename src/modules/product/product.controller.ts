@@ -6,9 +6,7 @@ import { Body, Controller, Get, Post, Query, Response, Headers, UseGuards } from
 
 @Controller('products')
 export class ProductController {
-	constructor(
-		private readonly service: ProductService
-	) { }
+	constructor(private readonly service: ProductService) {}
 
 	@Post()
 	@UseGuards(AuthGuard('jwt'))
@@ -17,7 +15,11 @@ export class ProductController {
 	}
 
 	@Get()
-	public async list(@Query() query: ProductQuery, @Headers() headers: { [header: string]: string }, @Response() response: HttpResponse): Promise<void> {
+	public async list(
+		@Query() query: ProductQuery,
+		@Headers() headers: { [header: string]: string },
+		@Response() response: HttpResponse
+	): Promise<void> {
 		let sortType = ProductSortType[headers['sorttype']]
 		sortType = sortType === undefined ? ProductSortType.CodeAsc : sortType
 

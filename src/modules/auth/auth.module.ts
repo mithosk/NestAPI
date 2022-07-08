@@ -25,4 +25,4 @@ import { UserRepository } from '../../data/repositories/user.repository'
 		})
 	]
 })
-export class AuthModule { }
+export class AuthModule {}

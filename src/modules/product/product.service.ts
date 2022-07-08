@@ -17,12 +17,11 @@ export class ProductService {
 		private readonly productRepository: ProductRepository,
 		private readonly dataConnection: Connection,
 		private readonly productBus: ProductBus
-	) { }
+	) {}
 
 	public async create(product: ProductModel): Promise<ProductModel> {
 		const sameCodeProduct = await this.productRepository.findByCode(product.code)
-		if (sameCodeProduct !== undefined)
-			throw new ForbiddenException('product code already used')
+		if (sameCodeProduct !== undefined) throw new ForbiddenException('product code already used')
 
 		let categoryEntity = await this.categoryRepository.findByCode(product.categoryCode)
 		if (categoryEntity === undefined) {
