@@ -5,7 +5,7 @@ import { BadRequestException, Body, Controller, Param, Patch, UseGuards } from '
 
 @Controller('categories')
 export class CategoryController {
-	constructor(private readonly service: CategoryService) { }
+	constructor(private readonly service: CategoryService) {}
 
 	@Patch(':id')
 	@UseGuards(AuthGuard('jwt'))
