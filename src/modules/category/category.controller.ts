@@ -1,11 +1,17 @@
 import { AuthGuard } from '@nestjs/passport'
 import { CategoryModel } from './category.interface'
 import { CategoryService } from './category.service'
-import { BadRequestException, Body, Controller, Param, Patch, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Param, Patch, Put, UseGuards } from '@nestjs/common'
 
 @Controller('categories')
 export class CategoryController {
 	constructor(private readonly service: CategoryService) {}
+
+	@Put(':id')
+	@UseGuards(AuthGuard('jwt'))
+	public async put(@Param('id') id: string, @Body() body: CategoryModel): Promise<CategoryModel> {
+		return await this.service.update({ ...body, id })
+	}
 
 	@Patch(':id')
 	@UseGuards(AuthGuard('jwt'))
