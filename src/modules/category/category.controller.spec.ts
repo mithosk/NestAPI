@@ -36,6 +36,30 @@ describe('CategoryController', () => {
 		await getConnection().close()
 	})
 
+	describe('put', () => {
+		it('updates category', async () => {
+			const id = '1315625a-76da-4a1e-89dc-fc822797804d'
+
+			jest.spyOn(service, 'update').mockImplementation(async (category: CategoryModel) => {
+				return {
+					id: category.id,
+					code: category.code + '_B',
+					description: category.description + ' b'
+				}
+			})
+
+			const category = await controller.put(id, {
+				id: undefined,
+				code: 'CATEGORY_CODE',
+				description: 'category description'
+			})
+
+			expect(category.id).toEqual(id)
+			expect(category.code).toEqual('CATEGORY_CODE_B')
+			expect(category.description).toEqual('category description b')
+		})
+	})
+
 	describe('patch', () => {
 		it('updates code', async () => {
 			jest.spyOn(service, 'read').mockImplementation(() =>
